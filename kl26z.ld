@@ -38,6 +38,7 @@ SECTIONS
 {
 	.text : {
 		. = 0;
+		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
 		. = 0x400;
 		KEEP(*(.flashconfig))
@@ -46,13 +47,15 @@ SECTIONS
 		. = ALIGN(4);
 		KEEP(*(.init))
         . = ALIGN(4);
-	} > FLASH = 0xF0
+        KEEP(*(.init.array))
+	} > FLASH = 0xFF
 
 	.ARM.exidx : {
 		__exidx_start = .;
 		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
 		__exidx_end = .;
 	} > FLASH
+
 	_etext = .;
 
 	.bss : {

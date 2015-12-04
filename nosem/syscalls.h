@@ -7,8 +7,6 @@
 
 #include <sys/types.h>
 #include <stddef.h>
-#include "kinetis.h"
-
 
 extern void main() __attribute__ ((section(".text"), used));
 
