@@ -10,7 +10,7 @@
 
 namespace nos {
 
-using fixed = fixedpoint::fixed_point<8>;
+using fixed = fixedpoint::fixed_point<12>;
 
 }
 

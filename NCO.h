@@ -5,16 +5,15 @@
 #ifndef JULIMIN_NCO_H
 #define JULIMIN_NCO_H
 
-#include <functional>
 #include <fixed.h>
 
+template <uint16_t (*VAL_FUNC)(nos::fixed const&)>
 class NCO {
 protected:
 	nos::fixed accumulator {0.0f};
 	nos::fixed phase {0.0f};
 
 	uint16_t value = 0;
-	std::function<uint16_t (nos::fixed const&)> vFunc;
 
 public:
 
@@ -23,12 +22,8 @@ public:
 	}
 
 	void step() {
-		uint8_t index = (accumulator.intValue >> 24) & 0xff;
-
-		if (vFunc)
-			value = vFunc(index);
-
 		accumulator += phase;
+		value = VAL_FUNC(accumulator);
 	}
 
 	uint16_t sample() {

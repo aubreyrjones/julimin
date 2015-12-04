@@ -7,12 +7,15 @@
 
 #include <sys/types.h>
 #include <stddef.h>
+#include "kinetis.h"
 
 pid_t _getpid(void);
 
 pid_t _getppid(void);
 
 int _kill(pid_t pid, int sig);
+
+void _start();
 
 void _exit(int status)  __attribute__((noreturn));
 
