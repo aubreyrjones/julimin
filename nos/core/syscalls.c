@@ -10,6 +10,20 @@
 
 extern int errno;
 
+void* memcpy(void* dest, void* src, size_t n) {
+	char *d = (char*) dest;
+	char *s = (char*) src;
+	for (; n != 0; n--) {
+		d[n - 1] = s[n - 1];
+	}
+
+	return dest;
+}
+
+void abort(void) {
+	_exit(0);
+}
+
 void _exit(int status) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"

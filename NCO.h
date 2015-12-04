@@ -5,7 +5,7 @@
 #ifndef JULIMIN_NCO_H
 #define JULIMIN_NCO_H
 
-#include <fixed.h>
+#include <math/fixed.h>
 
 template <uint16_t (*VAL_FUNC)(nos::fixed const&)>
 class NCO {

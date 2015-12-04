@@ -9,7 +9,4 @@
 
 extern void _start();
 
-extern unsigned long _estack;
-
-
 #endif //JULIMIN_CORE_H

@@ -3,6 +3,7 @@
 //
 
 #include "core.h"
+extern unsigned long _estack;
 
 void fault_isr(void) {
 	while (1) { }

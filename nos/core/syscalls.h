@@ -10,12 +10,15 @@
 
 extern void main() __attribute__ ((section(".text"), used));
 
+void* memcpy(void* dest, void* src, size_t n);
 
-//pid_t _getpid(void);
-//
-//pid_t _getppid(void);
-//
-//int _kill(pid_t pid, int sig);
+void abort(void);
+
+pid_t _getpid(void);
+
+pid_t _getppid(void);
+
+int _kill(pid_t pid, int sig);
 
 void _start();
 
