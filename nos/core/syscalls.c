@@ -9,6 +9,7 @@
 #include "syscalls.h"
 
 extern int errno;
+static char * _heapEnd = 0;
 
 void* memcpy(void* dest, void* src, size_t n) {
 	char *d = (char*) dest;
@@ -23,6 +24,22 @@ void* memcpy(void* dest, void* src, size_t n) {
 void abort(void) {
 	_exit(0);
 }
+
+
+void*_sbrk(ptrdiff_t increment) {
+	extern char _heapStart;
+
+	if (!_heapEnd) {
+		_heapEnd = &_heapStart;
+	}
+
+	char *prevHeapEnd = _heapEnd;
+
+	_heapEnd += increment;
+
+	return prevHeapEnd;
+}
+
 
 void _exit(int status) {
 #pragma clang diagnostic push
@@ -42,10 +59,6 @@ pid_t _getppid(void) {
 int _kill(pid_t pid, int sig) {
 	errno = EINVAL;
 	return -1;
-}
-
-void *_sbrk(ptrdiff_t increment) {
-	return 0;
 }
 
 void _start() {

@@ -43,12 +43,11 @@ SECTIONS
 		. = 0x400;
 		KEEP(*(.flashconfig))
 		KEEP(*(.text))
-		*(.rodata*)
-		. = ALIGN(4);
+		KEEP(*(.init.array))
 		KEEP(*(.init))
-        . = ALIGN(4);
-        KEEP(*(.init.array))
 	} > FLASH = 0xFF
+
+	_etext = .;
 
 	.ARM.exidx : {
 		__exidx_start = .;
@@ -56,7 +55,13 @@ SECTIONS
 		__exidx_end = .;
 	} > FLASH
 
-	_etext = .;
+
+	.rodata : {
+		. = ALIGN(4);
+		*(.rodata*)
+	} > FLASH
+	_edata = .;
+
 
 	.bss : {
 		. = ALIGN(4);
@@ -69,6 +74,8 @@ SECTIONS
 		__bss_end = .;
 		__bss_end__ = .;
 	} > RAM
+
+	_heapStart = .;
 
 	_estack = ORIGIN(RAM) + LENGTH(RAM);
 }

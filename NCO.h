@@ -7,13 +7,13 @@
 
 #include <math/fixed.h>
 
-template <uint16_t (*VAL_FUNC)(nos::fixed const&)>
+template <nos::fixed (*VAL_FUNC)(nos::fixed const&)>
 class NCO {
 protected:
 	nos::fixed accumulator {0.0f};
 	nos::fixed phase {0.0f};
 
-	uint16_t value = 0;
+	nos::fixed value = 0;
 
 public:
 
@@ -26,7 +26,7 @@ public:
 		value = VAL_FUNC(accumulator);
 	}
 
-	uint16_t sample() {
+	nos::fixed sample() {
 		return value;
 	}
 };
