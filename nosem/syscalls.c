@@ -51,5 +51,9 @@ void _exit(int status) {
 
 __attribute__ ((section(".vectors"), used))
 void (*const _VectorsFlash[NVIC_NUM_INTERRUPTS + 16])(void) =
-		{(void (*)(void)) ((unsigned long) &_estack)
+		{(void (*)(void)) ((unsigned long) &_estack),
+		 reset_handler
 };
+
+__attribute__ ((section(".flashconfig"), used))
+uint8_t const _FlashConfig[16] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };

@@ -3,7 +3,7 @@ project(julimin)
 
 add_definitions(-D__MKL26Z64__)
 
-set(COMMON_OPTIONS "-Os -fwhole-program -flto -Wall -Wno-unknown-pragmas -nostartfiles -ffast-math")
+set(COMMON_OPTIONS "-Os -flto -Wall -Wno-unknown-pragmas -nostartfiles -ffast-math")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${COMMON_OPTIONS}")

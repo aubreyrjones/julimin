@@ -40,12 +40,13 @@ SECTIONS
 		. = 0;
 		KEEP(*(.vectors))
 		. = 0x400;
-		*(.text*)
+		KEEP(*(.flashconfig))
+		KEEP(*(.text))
 		*(.rodata*)
 		. = ALIGN(4);
 		KEEP(*(.init))
         . = ALIGN(4);
-	} > FLASH = 0xFF
+	} > FLASH = 0xF0
 
 	.ARM.exidx : {
 		__exidx_start = .;
