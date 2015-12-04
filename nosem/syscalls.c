@@ -4,7 +4,34 @@
 
 #include "syscalls.h"
 
-extern void main();
+
+//pid_t _getpid(void) {
+//	return 1;
+//}
+//
+//pid_t _getppid(void) {
+//	return 0;
+//}
+//
+//int _kill(pid_t pid, int sig) {
+//	return 0;
+//}
+
+void *_sbrk(ptrdiff_t increment) {
+	return 0;
+}
+
+void _start() {
+	main();
+	_exit(0);
+}
+
+void _exit(int status) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+	while (1);
+#pragma clang diagnostic pop
+}
 
 extern unsigned long _stext;
 extern unsigned long _etext;
@@ -22,32 +49,6 @@ void reset_handler(void) {
 	_start();
 }
 
-pid_t _getpid(void) {
-	return 1;
-}
-
-pid_t _getppid(void) {
-	return 0;
-}
-
-int _kill(pid_t pid, int sig) {
-	return 0;
-}
-
-void *_sbrk(ptrdiff_t increment) {
-	return 0;
-}
-
-void _start() {
-	main();
-}
-
-void _exit(int status) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-	while (1);
-#pragma clang diagnostic pop
-}
 
 __attribute__ ((section(".vectors"), used))
 void (*const _VectorsFlash[NVIC_NUM_INTERRUPTS + 16])(void) =

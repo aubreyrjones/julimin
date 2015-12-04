@@ -9,11 +9,15 @@
 #include <stddef.h>
 #include "kinetis.h"
 
-pid_t _getpid(void);
 
-pid_t _getppid(void);
+extern void main() __attribute__ ((section(".text"), used));
 
-int _kill(pid_t pid, int sig);
+
+//pid_t _getpid(void);
+//
+//pid_t _getppid(void);
+//
+//int _kill(pid_t pid, int sig);
 
 void _start();
 
