@@ -36,32 +36,100 @@ MEMORY
 
 SECTIONS
 {
-	.text : {
+	_heapStart = 0;
+	_sdata = 0;
+	_sdatainit = 0;
+	_edata = 0;
+	_edatainit = 0;
+	_sbss = 0;
+	_ebss = 0;
+
+	.nvic : {
 		. = 0;
 		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
 		. = 0x400;
-		KEEP(*(.flashconfig))
-		KEEP(*(.text))
-		KEEP(*(.init.array))
-		KEEP(*(.init))
 	} > FLASH = 0xFF
 
-	_etext = .;
-
-	.ARM.exidx : {
-		__exidx_start = .;
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
-		__exidx_end = .;
+	.flashconfigregister : {
+		KEEP(*(.flashconfig))
 	} > FLASH
+
+	.init : {
+		KEEP(*(.init))
+	} > FLASH
+
+	.ARM.extab : {
+		*(.ARM.extab*)
+	} > FLASH
+
+    .ARM.exidx : {
+     	__exidx_start = .;
+     	*(.ARM.exidx*)
+    	__exidx_end = .;
+    } > FLASH
+
+	.preinit_array : {
+		PROVIDE_HIDDEN (__preinit_array_start = .);
+    	KEEP (*(.preinit_array))
+		PROVIDE_HIDDEN (__preinit_array_end = .);
+    } > FLASH
+
+	.init_array : {
+		PROVIDE_HIDDEN (__init_array_start = .);
+		KEEP (*(SORT(.init_array.*)))
+		KEEP (*(.init_array))
+		PROVIDE_HIDDEN (__init_array_end = .);
+	} > FLASH
+
+	.fini_array : {
+		PROVIDE_HIDDEN (__fini_array_start = .);
+		KEEP (*(.fini_array))
+		KEEP (*(SORT(.fini_array.*)))
+		PROVIDE_HIDDEN (__fini_array_end = .);
+	} > FLASH
+
+	.ctors : {
+		PROVIDE_HIDDEN (__ctor_array_start = .);
+		KEEP (*(.ctors))
+		KEEP (*(SORT(.ctors.*)))
+		PROVIDE_HIDDEN (__ctor_array_end = .);
+	} > FLASH
+
+	.dtors : {
+		PROVIDE_HIDDEN (__dtor_array_start = .);
+		KEEP (*(.dtors))
+		KEEP (*(SORT(.dtors.*)))
+		PROVIDE_HIDDEN (__dtor_array_end = .);
+	} > FLASH
+
+	.text : {
+		/* KEEP(*(_start)) */
+		*(.text .text.*)
+	}
+
+	_etext = .;
 
 
 	.rodata : {
 		. = ALIGN(4);
+		*(.rdata*)
 		*(.rodata*)
 	} > FLASH
-	_edata = .;
 
+	.datainit : {
+		. = ALIGN(4);
+		_sdatainit = .;
+   		KEEP(*(.data .data.*))
+   		_edatainit = .;
+	} > FLASH
+
+	.data : {
+		. = ALIGN(4);
+		_sdata = .;
+		. += SIZEOF(.datainit);
+		_edata = .;
+	} > RAM
 
 	.bss : {
 		. = ALIGN(4);

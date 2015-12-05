@@ -11,20 +11,25 @@
 extern int errno;
 static char * _heapEnd = 0;
 
-void* memcpy(void* dest, void* src, size_t n) {
-	char *d = (char*) dest;
-	char *s = (char*) src;
-	for (; n != 0; n--) {
-		d[n - 1] = s[n - 1];
-	}
+void _start() {
+	// copy data from initializer
+	extern char _sdata, _edata, _sdatainit;
+	memcpy(&_sdata, &_sdatainit, &_edata - &_sdata);
 
-	return dest;
+	// zero bss
+	extern unsigned long _sbss, _ebss;
+	bzero(&_sbss, (&_ebss - &_sbss) * sizeof(unsigned long));
+
+	_exit(main());
 }
 
 void abort(void) {
 	_exit(0);
 }
 
+void _abort(void) {
+	_exit(0);
+}
 
 void*_sbrk(ptrdiff_t increment) {
 	extern char _heapStart;
@@ -40,12 +45,8 @@ void*_sbrk(ptrdiff_t increment) {
 	return prevHeapEnd;
 }
 
-
 void _exit(int status) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
 	while (1);
-#pragma clang diagnostic pop
 }
 
 pid_t _getpid(void) {
@@ -59,9 +60,4 @@ pid_t _getppid(void) {
 int _kill(pid_t pid, int sig) {
 	errno = EINVAL;
 	return -1;
-}
-
-void _start() {
-	main();
-	_exit(0);
 }

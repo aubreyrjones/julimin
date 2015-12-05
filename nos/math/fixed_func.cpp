@@ -40,7 +40,7 @@ namespace fixedpoint {
 static const int32_t FIX16_2PI	= float2fix<16>(6.28318530717958647692f);
 static const int32_t FIX16_R2PI = float2fix<16>(1.0f/6.28318530717958647692f);
 
-static const uint16_t sin_tab[] = {
+static const uint16_t sin_tab_16[] = {
 #include "fixsintab.h"
 };
 
@@ -55,7 +55,7 @@ int32_t fixcos16(int32_t a)
     /* now in the range [0, 0xffff], reduce to [0, 0xfff] */
     a >>= 4;
 
-    v = (a & 0x400) ? sin_tab[0x3ff - (a & 0x3ff)] : sin_tab[a & 0x3ff];
+    v = (a & 0x400) ? sin_tab_16[0x3ff - (a & 0x3ff)] : sin_tab_16[a & 0x3ff];
 	v = fixmul<16>(v, 1 << 16);
     return (a & 0x800) ? -v : v;
 }
@@ -71,7 +71,7 @@ int32_t fixsin16(int32_t a)
     /* now in the range [0, 0xffff], reduce to [0, 0xfff] */
     a >>= 4;
 
-    v = (a & 0x400) ? sin_tab[0x3ff - (a & 0x3ff)] : sin_tab[a & 0x3ff];
+    v = (a & 0x400) ? sin_tab_16[0x3ff - (a & 0x3ff)] : sin_tab_16[a & 0x3ff];
     v = fixmul<16>(v, 1 << 16);
     return (a & 0x800) ? -v : v;
 }
