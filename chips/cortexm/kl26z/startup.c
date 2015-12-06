@@ -4,25 +4,53 @@
 // Startup code for Teensy LC, derived from `mk20dx128.c` from teensyduino - Copyright (c) 2013 PJRC.COM, LLC.
 //
 
-#include "startup.h"
 #include "kinetis.h"
+#include <core/startup.h>
+
+#define CPU_CORE_FREQUENCY 48000000
+
+/** Defined in syscalls.c. */
+extern void _start();
+
+/** Fault ISR, infinite loop. */
+void fault_isr(void) {
+	while (1) { }
+}
+
+extern unsigned long _estack;
+__attribute__ ((section(".stackstart"), used))
+const void * _stackStart [1] = {
+		&_estack
+};
+
+__attribute__ ((section(".vectors"), used))
+void (*const _vectorTable[NVIC_NUM_INTERRUPTS + 16])(void) = {
+		_start,
+		fault_isr,
+		fault_isr,
+		fault_isr,
+		fault_isr,
+		fault_isr
+};
+
+__attribute__ ((section(".flashconfig"), used))
+uint8_t const _flashConfiguration[16] =
+		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff };
 
 
 void cstart_prestart() {
+	SIM_COPC = 0;
+
 	// unlock power modes.
-	SMC_PMPROT = SMC_PMPROT_AVLP | SMC_PMPROT_ALLS | SMC_PMPROT_AVLLS;
+	//SMC_PMPROT = SMC_PMPROT_AVLP | SMC_PMPROT_ALLS | SMC_PMPROT_AVLLS;
 
-	// wake from VLLS magic, release IO pins.
-	if (PMC_REGSC & PMC_REGSC_ACKISO) {
-		PMC_REGSC |= PMC_REGSC_ACKISO;
-	}
+	//SIM_SCGC4 = SIM_SCGC4_USBOTG | 0xF0000030;
+	//SIM_SCGC6 = SIM_SCGC6_ADC0 | SIM_SCGC6_TPM0 | SIM_SCGC6_TPM1 | SIM_SCGC6_TPM2 | SIM_SCGC6_FTFL;
 
-	SIM_SCGC4 = SIM_SCGC4_USBOTG | 0xF0000030;
-	SIM_SCGC6 = SIM_SCGC6_ADC0 | SIM_SCGC6_TPM0 | SIM_SCGC6_TPM1 | SIM_SCGC6_TPM2 | SIM_SCGC6_FTFL;
-
-	for (int i=0; i < NVIC_NUM_INTERRUPTS; i++) {
-		NVIC_SET_PRIORITY(i, 128);
-	}
+	//for (int i=0; i < NVIC_NUM_INTERRUPTS; i++) {
+	//	NVIC_SET_PRIORITY(i, 128);
+	//}
 }
 
 void cstart_core_clocks() {
@@ -47,8 +75,8 @@ void cstart_core_clocks() {
 	MCG_C6 = MCG_C6_PLLS | MCG_C6_VDIV0(0);
 
 	// wait for clock and PLL locks
-	while (!(MCG_S & MCG_S_PLLST)) ;
-	while (!(MCG_S & MCG_S_LOCK0)) ;
+	while (!(MCG_S & MCG_S_PLLST)) {};
+	while (!(MCG_S & MCG_S_LOCK0)) {};
 
 	// divide by 2 for main clock: `48MHz`; divide by 2 for bus clock: `48MHz`.
 	SIM_CLKDIV1 = SIM_CLKDIV1_OUTDIV1(1) | SIM_CLKDIV1_OUTDIV4(1);
@@ -76,5 +104,10 @@ void cstart_core_clocks() {
 }
 
 void cstart_core_ports() {
-	SIM_SCGC5 = SIM_SCGC5_PORTC;
+	// wake from VLLS magic, release IO pins.
+	if (PMC_REGSC & PMC_REGSC_ACKISO) {
+		PMC_REGSC |= PMC_REGSC_ACKISO;
+	}
+
+	SIM_SCGC5 |= SIM_SCGC5_PORTC;
 }

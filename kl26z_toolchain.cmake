@@ -9,8 +9,8 @@ CMAKE_FORCE_CXX_COMPILER(arm-none-eabi-g++ GNU)
 # where is the target environment
 SET(CMAKE_FIND_ROOT_PATH /usr/lib/arm-none-eabi)
 
-link_directories(/usr/lib/arm-none-eabi/newlib)
-include_directories(/usr/include/newlib/c++/4.9/arm-none-eabi/armv6-m)
+link_directories(/usr/lib/arm-none-eabi/newlib/thumb)
+include_directories(/usr/include/newlib/c++/4.9/arm-none-eabi/thumb)
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

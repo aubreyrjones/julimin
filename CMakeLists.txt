@@ -33,10 +33,13 @@ if (NOT UNIX)
             COMMAND ${OBJCOPY_EXE} ARGS "-O" ihex julimin out.hex
             WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
             DEPENDS julimin)
+    add_custom_target(hexout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/out.hex")
 
 #    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/out.bin"
 #            COMMAND ${OBJCOPY_EXE} ARGS "-O" binary julimin out.bin
 #            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 #            DEPENDS julimin)
-#    add_custom_target(hexout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/out.hex" "${CMAKE_CURRENT_BINARY_DIR}/out.bin")
+#    add_custom_target(binout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/out.bin")
+
+
 endif()

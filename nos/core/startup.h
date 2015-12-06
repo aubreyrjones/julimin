@@ -5,15 +5,13 @@
 #ifndef JULIMIN_STARTUP_H
 #define JULIMIN_STARTUP_H
 
-#define CPU_CORE_FREQUENCY 48000000
-
 /** Executed immediately upon reset. Run **before** any data initialization is performed. */
-void cstart_prestart();
+void cstart_prestart() __attribute__((section(".startup")));
 
 /** Start chip clocks. Run **before** any data initialization is performed. */
-void cstart_core_clocks();
+void cstart_core_clocks() __attribute__((section(".startup")));
 
-/** Initialize ports and other IO. */
-void cstart_core_ports();
+/** Initialize GPIO pins for LEDs and other proof-of-life peripherals. */
+void cstart_core_ports() __attribute__((section(".startup")));
 
 #endif //JULIMIN_STARTUP_H

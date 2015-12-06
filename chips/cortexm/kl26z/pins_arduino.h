@@ -141,8 +141,8 @@ extern const struct digital_pin_bitband_and_config_table_struct digital_pin_to_i
 
 #elif defined(KINETISL)
 struct digital_pin_bitband_and_config_table_struct {
-        volatile uint8_t *reg;
-        volatile uint32_t *config;
+	volatile uint8_t *reg;
+    volatile uint32_t *config;
 	uint8_t mask;
 };
 extern const struct digital_pin_bitband_and_config_table_struct digital_pin_to_info_PGM[];

@@ -2,30 +2,34 @@
 // Created by ARJ on 12/3/15.
 //
 
-#include <core.h>
-#include <startup.h>
-
 #include <errno.h>
 #undef errno
+
+#include "startup.h"
 #include "syscalls.h"
+
+#include <kinetis.h>
 
 extern int errno;
 void* __dso_handle;
 
-void _start() {
+void _start() __attribute__((section(".startup")));
+void _start()  {
 	// do prestart stuff, if anything.
 	cstart_prestart();
+
+	// set up the clocks
+	cstart_core_clocks();
 
 	// copy data from initializer
 	extern char _sdata, _edata, _sdatainit;
 	memcpy(&_sdata, &_sdatainit, &_edata - &_sdata);
 
+	//light_led();
+
 	// zero bss
 	extern char _sbss, _ebss;
 	bzero(&_sbss, (&_ebss - &_sbss));
-
-	// set up the clocks
-	cstart_core_clocks();
 
 	// start GPIO ports.
 	cstart_core_ports();
@@ -44,7 +48,9 @@ void _start() {
 		(*p)();
 	}
 
-	_exit(main());
+	int mainretval = main();
+
+	_exit(mainretval);
 }
 
 void abort(void) {
@@ -71,7 +77,7 @@ void*_sbrk(ptrdiff_t increment) {
 }
 
 void _exit(int status) {
-	while (1);
+	while (1) {};
 }
 
 pid_t _getpid(void) {

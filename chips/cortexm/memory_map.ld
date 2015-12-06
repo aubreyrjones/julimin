@@ -36,19 +36,12 @@ MEMORY
 
 SECTIONS
 {
-	_heapStart = 0;
-	_sdata = 0;
-	_sdatainit = 0;
-	_edata = 0;
-	_edatainit = 0;
-	_sbss = 0;
-	_ebss = 0;
-
 	.nvic : {
 		. = 0;
 		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
-		. = 0x400; /* Do this to get the fill. */
+		*(.startup)
+		. = 0x400;
 		KEEP(*(.flashconfig))
 	} > FLASH = 0xFF
 
@@ -63,7 +56,8 @@ SECTIONS
     } > FLASH
 
 	.text : {
-		KEEP(*(reset_handler))
+		. = ALIGN(4);
+		KEEP(*(_start))
 		*(.text .text.*)
 	}
 	_etext = .;
