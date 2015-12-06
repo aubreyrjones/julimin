@@ -13,9 +13,14 @@ extern int errno;
 void* __dso_handle;
 
 void _start() {
-	typedef void (*func_ptr) (void);
 
+	// do prestart stuff, if anything.
 	cstart_prestart();
+
+	// set up the clocks
+	cstart_core_clocks();
+
+	typedef void (*func_ptr) (void);
 
 	// copy data from initializer
 	extern char _sdata, _edata, _sdatainit;
