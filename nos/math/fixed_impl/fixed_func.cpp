@@ -37,14 +37,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace fixedpoint {
 
-static const int32_t FIX16_2PI	= float2fix<16>(6.28318530717958647692f);
-static const int32_t FIX16_R2PI = float2fix<16>(1.0f/6.28318530717958647692f);
 
 static const uint16_t sin_tab_16[] = {
 #include "fixsintab.h"
 };
 
-int32_t fixcos16(int32_t a) 
+int32_t fixcos16(int32_t a)
 {
     int32_t v;
     /* reduce to [0,1) */

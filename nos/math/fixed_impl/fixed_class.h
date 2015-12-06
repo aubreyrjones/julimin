@@ -47,10 +47,13 @@ namespace fixedpoint {
 template <int p>
 struct fixed_point {
 	int32_t intValue;
+	constexpr static int precision = p;
 	
 	fixed_point() {}
 
-	fixed_point(int32_t i) : intValue(i << p) {}
+	constexpr explicit fixed_point(int32_t i) : intValue(i << p) {}
+
+	constexpr fixed_point(int32_t i, bool) : intValue(i) {}
 
 	explicit fixed_point(float f) : intValue(float2fix<p>(f)) {}
 

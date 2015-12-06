@@ -7,7 +7,7 @@ set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
 set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${COMMON_OPTIONS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-exceptions -fno-rtti ${COMMON_OPTIONS}")
 
 include_directories(/usr/include/newlib /usr/include/newlib/c++/4.9)
 
@@ -18,7 +18,7 @@ endif()
 
 set(NOS_SOURCE_FILES
         ${NOS_CHIP_FILES}
-        nos/math/fixed_func.cpp
+        nos/math/fixed_impl/fixed_func.cpp
         nos/core/syscalls.c
         )
 

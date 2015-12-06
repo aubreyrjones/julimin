@@ -6,31 +6,33 @@
 #define JULIMIN_NCO_H
 
 #include <math/fixed.h>
-#include <vector>
 
-template <nos::fixed (*VAL_FUNC)(nos::fixed const&)>
+typedef nos::fixed (* ValueFunction)(nos::fixed const&);
+
 class NCO {
 protected:
-	nos::fixed frequency {0.0f};
-	nos::fixed accumulator {0.0f};
-	nos::fixed phase {0.0f};
+	nos::fixed frequency = 0_f;
+	nos::fixed accumulator = 0_f;
+	nos::fixed phase = 0_f;
 
-	nos::fixed value {0.0f};
+	nos::fixed value = 0_f;
+
+	ValueFunction valFunc;
 
 public:
 
-	NCO() {
-		value += VAL_FUNC(accumulator);
+	NCO(ValueFunction const& func) : valFunc(func) {
+		value = valFunc(accumulator);
 	}
 
 	void setFrequency(nos::fixed const& freq) {
 		frequency = freq;
-		phase = freq * nos::fixed(256.0f) * nos::fixed(16777216.0f) + nos::fixed(0.5f);
+		phase = freq * 256_f * 16777216_f + 0.5_f;
 	}
 
 	void step() {
 		accumulator += phase;
-		value = VAL_FUNC(accumulator);
+		value = valFunc(accumulator);
 	}
 
 	nos::fixed sample() {

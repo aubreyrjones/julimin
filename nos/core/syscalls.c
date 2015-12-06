@@ -3,22 +3,39 @@
 //
 
 #include <core.h>
+#include <startup.h>
 
 #include <errno.h>
 #undef errno
 #include "syscalls.h"
 
 extern int errno;
-static char * _heapEnd = 0;
+void* __dso_handle;
 
 void _start() {
+	typedef void (*func_ptr) (void);
+
+	cstart_prestart();
+
 	// copy data from initializer
 	extern char _sdata, _edata, _sdatainit;
 	memcpy(&_sdata, &_sdatainit, &_edata - &_sdata);
 
 	// zero bss
-	extern unsigned long _sbss, _ebss;
-	bzero(&_sbss, (&_ebss - &_sbss) * sizeof(unsigned long));
+	extern char _sbss, _ebss;
+	bzero(&_sbss, (&_ebss - &_sbss));
+
+	// pre-init vector
+	extern func_ptr __preinit_array_start, __preinit_array_end;
+	for (func_ptr *p = &__preinit_array_start; p != &__preinit_array_end; ++p) {
+		(*p)();
+	}
+
+	// init vector
+	extern func_ptr __init_array_start, __init_array_end;
+	for (func_ptr *p = &__init_array_start; p != &__init_array_end; ++p) {
+		(*p)();
+	}
 
 	_exit(main());
 }
@@ -33,6 +50,7 @@ void _abort(void) {
 
 void*_sbrk(ptrdiff_t increment) {
 	extern char _heapStart;
+	static char * _heapEnd = 0;
 
 	if (!_heapEnd) {
 		_heapEnd = &_heapStart;

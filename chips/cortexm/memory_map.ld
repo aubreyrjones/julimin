@@ -48,7 +48,7 @@ SECTIONS
 		. = 0;
 		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
-		. = 0x400;
+		. = 0x400; /* Do this to get the fill. */
 	} > FLASH = 0xFF
 
 	.flashconfigregister : {
@@ -69,13 +69,21 @@ SECTIONS
     	__exidx_end = .;
     } > FLASH
 
+	.text : {
+		KEEP(*(reset_handler))
+		*(.text .text.*)
+	}
+	_etext = .;
+
 	.preinit_array : {
+		. = ALIGN(4);
 		PROVIDE_HIDDEN (__preinit_array_start = .);
     	KEEP (*(.preinit_array))
 		PROVIDE_HIDDEN (__preinit_array_end = .);
     } > FLASH
 
 	.init_array : {
+		. = ALIGN(4);
 		PROVIDE_HIDDEN (__init_array_start = .);
 		KEEP (*(SORT(.init_array.*)))
 		KEEP (*(.init_array))
@@ -83,33 +91,12 @@ SECTIONS
 	} > FLASH
 
 	.fini_array : {
+		. = ALIGN(4);
 		PROVIDE_HIDDEN (__fini_array_start = .);
 		KEEP (*(.fini_array))
 		KEEP (*(SORT(.fini_array.*)))
 		PROVIDE_HIDDEN (__fini_array_end = .);
 	} > FLASH
-
-	.ctors : {
-		PROVIDE_HIDDEN (__ctor_array_start = .);
-		KEEP (*(.ctors))
-		KEEP (*(SORT(.ctors.*)))
-		PROVIDE_HIDDEN (__ctor_array_end = .);
-	} > FLASH
-
-	.dtors : {
-		PROVIDE_HIDDEN (__dtor_array_start = .);
-		KEEP (*(.dtors))
-		KEEP (*(SORT(.dtors.*)))
-		PROVIDE_HIDDEN (__dtor_array_end = .);
-	} > FLASH
-
-	.text : {
-		/* KEEP(*(_start)) */
-		*(.text .text.*)
-	}
-
-	_etext = .;
-
 
 	.rodata : {
 		. = ALIGN(4);
