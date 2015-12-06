@@ -3,7 +3,7 @@ project(julimin)
 
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
-set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
+#set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
 set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
@@ -34,9 +34,9 @@ if (NOT UNIX)
             WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
             DEPENDS julimin)
 
-    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/out.bin"
-            COMMAND ${OBJCOPY_EXE} ARGS "-O" binary julimin out.bin
-            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-            DEPENDS julimin)
-    add_custom_target(hexout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/out.hex" "${CMAKE_CURRENT_BINARY_DIR}/out.bin")
+#    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/out.bin"
+#            COMMAND ${OBJCOPY_EXE} ARGS "-O" binary julimin out.bin
+#            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+#            DEPENDS julimin)
+#    add_custom_target(hexout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/out.hex" "${CMAKE_CURRENT_BINARY_DIR}/out.bin")
 endif()

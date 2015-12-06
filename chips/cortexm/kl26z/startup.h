@@ -13,4 +13,7 @@ void cstart_prestart();
 /** Start chip clocks. Run **before** any data initialization is performed. */
 void cstart_core_clocks();
 
+/** Initialize ports and other IO. */
+void cstart_core_ports();
+
 #endif //JULIMIN_STARTUP_H

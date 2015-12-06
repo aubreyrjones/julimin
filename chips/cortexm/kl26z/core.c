@@ -21,7 +21,7 @@ const void * _stackStart [1] = {
 __attribute__ ((section(".vectors"), used))
 void (*const _vectorTable[NVIC_NUM_INTERRUPTS + 16])(void) = {
 		reset_handler,
-		fault_isr,
+		reset_handler,
 		fault_isr,
 		fault_isr,
 		fault_isr,
@@ -31,4 +31,4 @@ void (*const _vectorTable[NVIC_NUM_INTERRUPTS + 16])(void) = {
 __attribute__ ((section(".flashconfig"), used))
 uint8_t const _flashConfiguration[16] =
 		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-		 0xff, 0xff, 0xff, 0xff, 0xfE, 0xff, 0xff, 0xff };
+		 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff };

@@ -13,14 +13,8 @@ extern int errno;
 void* __dso_handle;
 
 void _start() {
-
 	// do prestart stuff, if anything.
 	cstart_prestart();
-
-	// set up the clocks
-	cstart_core_clocks();
-
-	typedef void (*func_ptr) (void);
 
 	// copy data from initializer
 	extern char _sdata, _edata, _sdatainit;
@@ -29,6 +23,14 @@ void _start() {
 	// zero bss
 	extern char _sbss, _ebss;
 	bzero(&_sbss, (&_ebss - &_sbss));
+
+	// set up the clocks
+	cstart_core_clocks();
+
+	// start GPIO ports.
+	cstart_core_ports();
+
+	typedef void (*func_ptr) (void);
 
 	// pre-init vector
 	extern func_ptr __preinit_array_start, __preinit_array_end;

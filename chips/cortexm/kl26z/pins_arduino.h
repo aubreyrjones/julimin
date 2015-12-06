@@ -33,6 +33,10 @@
 
 #include <stdint.h>
 
+#define KINETISL 1
+#define F_CPU 48000000
+#define __MKL26Z64__
+
 // A0-A9 are always digital 14-23, for Arduino compatibility
 const static uint8_t A0 = 14;
 const static uint8_t A1 = 15;

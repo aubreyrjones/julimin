@@ -31,6 +31,10 @@
 #ifndef _core_pins_h_
 #define _core_pins_h_
 
+#define KINETISL 1
+#define F_CPU 48000000
+#define __MKL26Z64__
+
 #include "kinetis.h"
 #include "pins_arduino.h"
 

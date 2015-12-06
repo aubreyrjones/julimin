@@ -49,15 +49,8 @@ SECTIONS
 		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
 		. = 0x400; /* Do this to get the fill. */
-	} > FLASH = 0xFF
-
-	.flashconfigregister : {
 		KEEP(*(.flashconfig))
-	} > FLASH
-
-	.init : {
-		KEEP(*(.init))
-	} > FLASH
+	} > FLASH = 0xFF
 
 	.ARM.extab : {
 		*(.ARM.extab*)
