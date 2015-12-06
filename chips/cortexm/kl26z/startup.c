@@ -43,14 +43,14 @@ void cstart_prestart() {
 	SIM_COPC = 0;
 
 	// unlock power modes.
-	//SMC_PMPROT = SMC_PMPROT_AVLP | SMC_PMPROT_ALLS | SMC_PMPROT_AVLLS;
+	SMC_PMPROT = SMC_PMPROT_AVLP | SMC_PMPROT_ALLS | SMC_PMPROT_AVLLS;
 
 	//SIM_SCGC4 = SIM_SCGC4_USBOTG | 0xF0000030;
 	//SIM_SCGC6 = SIM_SCGC6_ADC0 | SIM_SCGC6_TPM0 | SIM_SCGC6_TPM1 | SIM_SCGC6_TPM2 | SIM_SCGC6_FTFL;
 
-	//for (int i=0; i < NVIC_NUM_INTERRUPTS; i++) {
-	//	NVIC_SET_PRIORITY(i, 128);
-	//}
+	for (int i=0; i < NVIC_NUM_INTERRUPTS; i++) {
+		NVIC_SET_PRIORITY(i, 128);
+	}
 }
 
 void cstart_core_clocks() {
@@ -109,5 +109,8 @@ void cstart_core_ports() {
 		PMC_REGSC |= PMC_REGSC_ACKISO;
 	}
 
+	// set up LED pin
 	SIM_SCGC5 |= SIM_SCGC5_PORTC;
+	PORTC_PCR5 = PORT_PCR_MUX(1) | PORT_PCR_DSE | PORT_PCR_SRE;
+	GPIOC_PDDR |= (1 << 5);
 }

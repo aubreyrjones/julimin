@@ -16,6 +16,7 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 set(OBJCOPY_EXE arm-none-eabi-objcopy)
+set(UPLOAD_HEX_EXE "${CMAKE_CURRENT_SOURCE_DIR}/load-tlc.sh")
 
 # chip specific
 set(COMMON_EMBED_OPTIONS "-march=armv6-m -mtune=cortex-m0plus -mthumb -mfloat-abi=soft -T ${CMAKE_CURRENT_SOURCE_DIR}/chips/cortexm/memory_map.ld")
@@ -23,5 +24,5 @@ set(COMMON_EMBED_OPTIONS "-march=armv6-m -mtune=cortex-m0plus -mthumb -mfloat-ab
 add_definitions(-D__MKL26Z64__)
 include_directories(chips/cortexm/kl26z)
 SET(NOS_CHIP_FILES
-        chips/cortexm/kl26z/core.c
+        chips/cortexm/kl26z/core.cpp
         chips/cortexm/kl26z/startup.c)
