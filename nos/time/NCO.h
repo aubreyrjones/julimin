@@ -37,7 +37,7 @@ public:
 
 	void step() {
 		accumulator += phaseIncrement;
-		value = table[~(1 << TPRECISION + 1) & (accumulator >> TPRECISION)];
+		value = table[~(1 << TPRECISION + 1) & (accumulator.intValue >> TPRECISION)];
 	}
 
 	value_type sample() {
