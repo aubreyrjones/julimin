@@ -11,6 +11,7 @@ SET(CMAKE_FIND_ROOT_PATH /usr/lib/arm-none-eabi)
 
 link_directories(/usr/lib/arm-none-eabi/newlib/thumb)
 include_directories(/usr/include/newlib/c++/4.9/arm-none-eabi/thumb)
+
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -21,8 +22,8 @@ set(UPLOAD_HEX_EXE "${CMAKE_CURRENT_SOURCE_DIR}/load-tlc.sh")
 # chip specific
 set(COMMON_EMBED_OPTIONS "-march=armv6-m -mtune=cortex-m0plus -mthumb -mfloat-abi=soft -T ${CMAKE_CURRENT_SOURCE_DIR}/chips/cortexm/memory_map.ld")
 
-add_definitions(-D__MKL26Z64__)
 include_directories(chips/cortexm chips/cortexm/kl26z)
 SET(NOS_CHIP_FILES
         chips/cortexm/kl26z/core.cpp
-        chips/cortexm/kl26z/startup.c)
+        chips/cortexm/kl26z/startup.c
+        chips/cortexm/kl26z/chip_support.h)

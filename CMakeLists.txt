@@ -3,7 +3,7 @@ project(julimin)
 
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
-set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
+#set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
 set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
@@ -16,15 +16,20 @@ if (NOT UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_EMBED_OPTIONS}")
 endif()
 
+# ============ NOS ===============
+
 set(NOS_SOURCE_FILES
         ${NOS_CHIP_FILES}
         nos/math/fixed_impl/fixed_func.cpp
         nos/core/syscalls.c
-        nos/core/delay.cpp)
+        nos/core/delay.cpp
+        nos/core/memory_port.h)
 
 include_directories(nos)
 
-set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES} nos/core/memory_port.h)
+# ================================
+
+set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES})
 add_executable(julimin ${SOURCE_FILES})
 target_link_libraries(julimin stdc++ c m gcc)
 

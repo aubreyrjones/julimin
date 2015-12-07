@@ -3,12 +3,11 @@
 //
 
 #include <core/led.h>
-#include <core/memory_port.h>
 #include "chip_support.h"
+
 
 namespace nos {
 void setStatusLEDState(bool ledLighted) {
-
 	if (ledLighted) {
 		FGPIOC_PSOR = (1 << 5);
 	}
