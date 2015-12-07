@@ -32,23 +32,14 @@ NVICTable _vectorTable = {
 		fault_isr
 };
 
-
-//__attribute__ ((section(".vectors"), used))
-//void (*const _vectorTable[NVIC_NUM_INTERRUPTS + 16])(void) = {
-//		_start,
-//		nmi_isr,
-//		fault_isr,
-//		reserved_isr, reserved_isr, reserved_isr,
-//		reserved_isr, reserved_isr, reserved_isr,
-//		syscall_isr,
-//		reserved_isr, reserved_isr,
-//		unused_isr,
-//};
-
 __attribute__ ((section(".flashconfig"), used))
 uint8_t const _flashConfiguration[16] =
 		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 		 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff };
+
+
+__attribute__ ((section(".ramnvic"), used))
+NVICTable _nvicTable;
 
 
 void chip_prestart() {

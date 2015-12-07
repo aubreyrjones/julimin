@@ -41,6 +41,12 @@ if (NOT UNIX)
             DEPENDS julimin)
     add_custom_target(hexout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/out.hex")
 
+    add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/image.bin"
+            COMMAND ${OBJCOPY_EXE} ARGS "-O" binary julimin image.bin
+            WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+            DEPENDS julimin)
+    add_custom_target(binout ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/image.bin")
+
     add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/.hex_uploaded"
             COMMAND ${UPLOAD_HEX_EXE} ARGS "out.hex"
             WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

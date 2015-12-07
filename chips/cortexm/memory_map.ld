@@ -102,20 +102,22 @@ SECTIONS
    		_edatainit = .;
 	} > FLASH
 
-	.ramnvic : {
+	/* RAM below here. */
+
+	.ramnvic (NOLOAD) : {
 		_s_ram_nvic = .;
-		. += SIZEOF(.nvic);
+		KEEP(*(.ramnvic));
 		_e_ram_nvic = .;
 	} > RAM
 
-	.data : {
+	.data . : {
 		. = ALIGN(4);
 		_sdata = .;
 		. += SIZEOF(.datainit);
 		_edata = .;
 	} > RAM
 
-	.bss : {
+	.bss . : {
 		. = ALIGN(4);
 		_sbss = .;
 		__bss_start__ = .;

@@ -7,10 +7,6 @@
 
 #include <chip_support.h>
 
-namespace nos {
-
-	__attribute__ ((section(".ramnvic")))
-	extern NVICTable _nvicTable;
-}
+extern NVICTable _nvicTable;
 
 #endif //JULIMIN_CHIP_H
