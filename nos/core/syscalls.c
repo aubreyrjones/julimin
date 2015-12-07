@@ -16,6 +16,9 @@ void _start()  {
 	// do prestart stuff, if anything.
 	chip_prestart();
 
+	// start GPIO ports.
+	chip_start_status_indicators();
+
 	// set up the clocks
 	chip_start_core_clocks();
 
@@ -23,14 +26,12 @@ void _start()  {
 	extern char _sdata, _edata, _sdatainit;
 	memcpy(&_sdata, &_sdatainit, &_edata - &_sdata);
 
-	//light_led();
-
 	// zero bss
 	extern char _sbss, _ebss;
 	bzero(&_sbss, (&_ebss - &_sbss));
 
-	// start GPIO ports.
-	chip_start_status_indicators();
+	// let the chip move exception vectors to RAM, if possible.
+	chip_move_vectors_to_ram();
 
 	typedef void (*func_ptr) (void);
 
@@ -46,9 +47,8 @@ void _start()  {
 		(*p)();
 	}
 
-	int mainretval = main();
-
-	_exit(mainretval);
+	// run the user's main, and then "exit".
+	_exit(main());
 }
 
 void abort(void) {

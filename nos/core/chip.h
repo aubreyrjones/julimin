@@ -7,6 +7,7 @@
 
 #include <chip_support.h>
 
+/** In-RAM vector table. */
 extern NVICTable _nvicTable;
 
 #endif //JULIMIN_CHIP_H

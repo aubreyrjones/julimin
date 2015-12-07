@@ -13,13 +13,16 @@ extern void _start();
 
 /** Fault ISR, infinite loop. */
 void fault_isr(void) {
+	FGPIOC_PSOR = (1 << 5);
 	abort();
 }
 
 void nmi_isr(void) {
+	FGPIOC_PSOR = (1 << 5);
 	abort();
 }
 void unused_isr(void) {
+	FGPIOC_PSOR = (1 << 5);
 	abort();
 }
 
@@ -43,13 +46,11 @@ NVICTable _nvicTable;
 
 
 void chip_prestart() {
+	// disable watchdog
 	SIM_COPC = 0;
 
 	// unlock power modes.
 	SMC_PMPROT = SMC_PMPROT_AVLP_MASK | SMC_PMPROT_ALLS_MASK | SMC_PMPROT_AVLLS_MASK;
-
-	//SIM_SCGC4 = SIM_SCGC4_USBOTG | 0xF0000030;
-	//SIM_SCGC6 = SIM_SCGC6_ADC0 | SIM_SCGC6_TPM0 | SIM_SCGC6_TPM1 | SIM_SCGC6_TPM2 | SIM_SCGC6_FTFL;
 
 	for (int i=0; i < NVIC_NUM_INTERRUPTS; i++) {
 		NVIC_SET_PRIORITY(i, 128);

@@ -19,7 +19,7 @@ private:
 
 protected:
 
-	/** Frequency with which the service routine is called. */
+	/** Frequency with which the service routine is called, in Hz. */
 	uint32_t frequency = 100;
 
 public:

@@ -60,7 +60,7 @@ typedef struct {
 	isr reset;
 	isr nmi;
 	isr hardFault;
-	isr _reserved1[6];
+	isr _reserved1[7];
 	isr svCall;
 	isr _reserved2[2];
 	isr pendSV;

@@ -18,25 +18,27 @@ SystemTimer::SystemTimer(uint32_t frequency, VoidFunc isr) {
 
 	_ins = this;
 
-	uint32_t ticksIn1s;
-
 	uint32_t ticksIn10ms = SYSTICK_CALIB;
+	uint32_t ticksInPeriod;
 	if (!ticksIn10ms) {
-		ticksIn1s = CPU_CORE_FREQUENCY;
+		ticksInPeriod = CPU_CORE_FREQUENCY / frequency;
 	}
 	else {
-		ticksIn1s = ticksIn10ms * 100;
+		ticksInPeriod = (ticksIn10ms * 100) / frequency;
 	}
 
-	uint32_t ticksInPeriod = (ticksIn1s / frequency);
-	if (ticksInPeriod) ticksInPeriod--; // off-by-one according to manual, `if` checks underflow.
-	SYSTICK_RVR = ticksInPeriod;
+
+	if (ticksInPeriod) ticksInPeriod--; // manual-suggested adjustment, `if` checks underflow.
+	SYSTICK_RVR = ticksInPeriod & 0xffffff;
 
 	_nvicTable.sysTick = isr;
+
+	SYSTICK_CSR |= SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENABLE;
 }
 
 SystemTimer::~SystemTimer() {
 
+	SYSTICK_CSR |= ~SYSTICK_CSR_ENABLE;
 
 	if (_ins == this) {
 		_ins = nullptr;
