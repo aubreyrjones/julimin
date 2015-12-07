@@ -8,18 +8,16 @@
 #include "startup.h"
 #include "syscalls.h"
 
-#include <kinetis.h>
-
 extern int errno;
 void* __dso_handle;
 
 void _start() __attribute__((section(".startup")));
 void _start()  {
 	// do prestart stuff, if anything.
-	cstart_prestart();
+	chip_prestart();
 
 	// set up the clocks
-	cstart_core_clocks();
+	chip_start_core_clocks();
 
 	// copy data from initializer
 	extern char _sdata, _edata, _sdatainit;
@@ -32,7 +30,7 @@ void _start()  {
 	bzero(&_sbss, (&_ebss - &_sbss));
 
 	// start GPIO ports.
-	cstart_core_ports();
+	chip_start_status_indicators();
 
 	typedef void (*func_ptr) (void);
 

@@ -3,15 +3,17 @@
 //
 
 #include <core/led.h>
-#include "kinetis.h"
+#include <core/memory_port.h>
+#include "chip_support.h"
 
 namespace nos {
 void setStatusLEDState(bool ledLighted) {
+
 	if (ledLighted) {
-		GPIOC_PSOR = (1 << 5);
+		FGPIOC_PSOR = (1 << 5);
 	}
 	else {
-		GPIOC_PCOR = (1 << 5);
+		FGPIOC_PCOR = (1 << 5);
 	}
 }
 };

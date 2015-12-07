@@ -1,5 +1,3 @@
-#include <kinetis.h>
-
 #include <math/fixed.h>
 #include <core/led.h>
 #include <core/delay.h>

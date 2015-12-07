@@ -24,7 +24,7 @@ set(NOS_SOURCE_FILES
 
 include_directories(nos)
 
-set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES})
+set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES} nos/core/memory_port.h)
 add_executable(julimin ${SOURCE_FILES})
 target_link_libraries(julimin stdc++ c m gcc)
 

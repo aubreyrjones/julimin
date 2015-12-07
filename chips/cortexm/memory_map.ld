@@ -38,8 +38,10 @@ SECTIONS
 {
 	.nvic : {
 		. = 0;
+		_s_flash_nvic = .;
 		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
+		_e_flash_nvic = .;
 		*(.startup)
 		. = 0x400;
 		KEEP(*(.flashconfig))
@@ -97,6 +99,12 @@ SECTIONS
    		KEEP(*(.data .data.*))
    		_edatainit = .;
 	} > FLASH
+
+	.ramnvic : {
+		_s_ram_nvic = .;
+		. += SIZEOF(.nvic);
+		_e_ram_nvic = .;
+	} > RAM
 
 	.data : {
 		. = ALIGN(4);
