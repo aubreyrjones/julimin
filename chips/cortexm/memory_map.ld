@@ -36,16 +36,19 @@ MEMORY
 
 SECTIONS
 {
-	.nvic : {
-		. = 0;
+	.nvic 0x0 : {
 		_s_flash_nvic = .;
-		KEEP(*(.stackstart))
 		KEEP(*(.vectors))
 		_e_flash_nvic = .;
+	} > FLASH
+
+	.startup : {
 		*(.startup)
-		. = 0x400;
+	} > FLASH
+
+	.flashconfig 0x400 : {
 		KEEP(*(.flashconfig))
-	} > FLASH = 0xFF
+	} > FLASH
 
 	.ARM.extab : {
 		*(.ARM.extab*)
@@ -61,8 +64,7 @@ SECTIONS
 		. = ALIGN(4);
 		KEEP(*(_start))
 		*(.text .text.*)
-	}
-	_etext = .;
+	} > FLASH
 
 	.preinit_array : {
 		. = ALIGN(4);

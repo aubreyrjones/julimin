@@ -13,24 +13,37 @@ extern void _start();
 
 /** Fault ISR, infinite loop. */
 void fault_isr(void) {
-	while (1) { }
+	abort();
+}
+
+void nmi_isr(void) {
+	abort();
+}
+void unused_isr(void) {
+	abort();
 }
 
 extern unsigned long _estack;
-__attribute__ ((section(".stackstart"), used))
-const void * _stackStart [1] = {
-		&_estack
-};
-
 __attribute__ ((section(".vectors"), used))
-void (*const _vectorTable[NVIC_NUM_INTERRUPTS + 16])(void) = {
+NVICTable _vectorTable = {
+		&_estack,
 		_start,
-		fault_isr,
-		fault_isr,
-		fault_isr,
-		fault_isr,
+		nmi_isr,
 		fault_isr
 };
+
+
+//__attribute__ ((section(".vectors"), used))
+//void (*const _vectorTable[NVIC_NUM_INTERRUPTS + 16])(void) = {
+//		_start,
+//		nmi_isr,
+//		fault_isr,
+//		reserved_isr, reserved_isr, reserved_isr,
+//		reserved_isr, reserved_isr, reserved_isr,
+//		syscall_isr,
+//		reserved_isr, reserved_isr,
+//		unused_isr,
+//};
 
 __attribute__ ((section(".flashconfig"), used))
 uint8_t const _flashConfiguration[16] =
