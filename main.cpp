@@ -2,7 +2,11 @@
 #include <core/led.h>
 #include <core/delay.h>
 #include <time/SystemTimer.h>
-#include "NCO.h"
+#include <time/NCO.h>
+
+uint32_t table[] = {1, 0};
+
+nos::NCO<uint32_t, 12> osc1(44100, table);
 
 void blink() {
 	static bool on = false;

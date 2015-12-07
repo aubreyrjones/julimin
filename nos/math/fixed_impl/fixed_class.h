@@ -51,8 +51,9 @@ struct fixed_point {
 	
 	fixed_point() {}
 
-	constexpr explicit fixed_point(int32_t i) : intValue(i << p) {}
+	constexpr fixed_point(int32_t i) : intValue(i << p) {}
 
+	/** Prescaled constructor. */
 	constexpr fixed_point(int32_t i, bool) : intValue(i) {}
 
 	explicit fixed_point(float f) : intValue(float2fix<p>(f)) {}
