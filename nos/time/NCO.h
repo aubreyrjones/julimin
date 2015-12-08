@@ -28,20 +28,19 @@ public:
 
 protected:
 	uint32_t sampleRate;
+	float const sampleRateConstant;
 	float frequency = 0.0f;
 
 	uint32_t accumulator = 0;
 	uint32_t phaseIncrement = 0;
 
-	value_type const* table;
-	value_type value; // current value
+	uint32_t _index; // current index
 
 public:
 
-	NCO(uint32_t const &sampleRate, value_type const* sampleTable) :
+	NCO(uint32_t const &sampleRate) :
 			sampleRate(sampleRate),
-			table(sampleTable),
-			value(sampleTable[0])
+			sampleRateConstant(intBitsFloat / sampleRate)
 	{ }
 
 	/**
@@ -50,7 +49,7 @@ public:
 	void setFrequency(float const& freq) volatile {
 		frequency = freq;
 
-		float phIncr = (frequency * intBitsFloat) / sampleRate;
+		float phIncr = frequency * sampleRateConstant;
 
 		phaseIncrement = static_cast<uint32_t>(phIncr * fractBitsFloat);
 
@@ -64,14 +63,13 @@ public:
 	/** Step function, integer-only, suitable for use in a real-time ISR. */
 	void step() volatile {
 		accumulator += phaseIncrement;
-		value = table[bitmask(intBits) & (accumulator >> fractBits)];
+		_index = bitmask(intBits) & (accumulator >> fractBits);
 		_mem_barrier();
 	}
 
-	/** Return the current table value. */
-	value_type const& sample() volatile const  {
-		return const_cast<value_type const&>(value);
-	}
+	uint32_t const volatile& getIndex() volatile const { return _index; }
+
+	uint32_t const volatile& i() volatile const { return getIndex(); }
 };
 
 }
