@@ -7,10 +7,7 @@
 namespace nos {
 
 void spin(size_t n) {
-	while (n) {
-		--n;
-		__asm__ volatile ("nop");
-	}
+	while (n--) __asm__ volatile ("nop");
 }
 
 }

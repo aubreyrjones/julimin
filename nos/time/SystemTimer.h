@@ -6,7 +6,7 @@
 #define JULIMIN_SYSTEM_TIMER_H
 
 #include <stdint.h>
-#include <core/types.h>
+#include <core/common.h>
 
 namespace nos {
 

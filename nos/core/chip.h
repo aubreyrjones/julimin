@@ -7,6 +7,10 @@
 
 #include <chip_support.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** In-RAM vector table. */
 extern NVICTable _nvicTable;
 
@@ -17,5 +21,10 @@ inline void _mem_barrier() {
 inline void _mem_sync() {
 	__asm__ volatile ("dsb");
 }
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif //JULIMIN_CHIP_H

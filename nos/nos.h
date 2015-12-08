@@ -7,7 +7,7 @@
  *
  * */
 
-#include <core/types.h>
+#include "common.h"
 #include <core/led.h>
 #include <core/syscalls.h>
 #include <math/fixed.h>

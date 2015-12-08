@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #endif
 
-#include "../../core/types.h"
+#include "../../core/common.h"
 #include "fixed_func.h"
 
 namespace fixedpoint {
