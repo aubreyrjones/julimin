@@ -4,7 +4,6 @@
 
 #include <core/chip.h>
 #include <core/errors.h>
-#include <kl26z/chip_support.h>
 #include "SystemTimer.h"
 
 namespace nos {
@@ -33,11 +32,12 @@ SystemTimer::SystemTimer(uint32_t frequency, VoidFunc isr) {
 
 	_nvicTable.sysTick = isr;
 
+	_mem_barrier();
+
 	SYSTICK_CSR |= SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENABLE;
 }
 
 SystemTimer::~SystemTimer() {
-
 	SYSTICK_CSR |= ~SYSTICK_CSR_ENABLE;
 
 	if (_ins == this) {

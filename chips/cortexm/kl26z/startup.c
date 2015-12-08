@@ -35,14 +35,14 @@ NVICTable _vectorTable = {
 		fault_isr
 };
 
+__attribute__ ((section(".ramnvic"), used))
+NVICTable _nvicTable;
+
+
 __attribute__ ((section(".flashconfig"), used))
 uint8_t const _flashConfiguration[16] =
 		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 		 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff };
-
-
-__attribute__ ((section(".ramnvic"), used))
-NVICTable _nvicTable;
 
 
 void chip_prestart() {
@@ -111,6 +111,8 @@ void chip_move_vectors_to_ram() {
 	memcpy(&_s_ram_nvic, &_s_flash_nvic, &_e_ram_nvic - &_s_ram_nvic);
 
 	SCB_VTOR = (uint32_t) &_s_ram_nvic;
+
+	asm volatile ("dsb");
 }
 
 void chip_start_status_indicators() {

@@ -37,9 +37,9 @@ MEMORY
 SECTIONS
 {
 	.nvic 0x0 : {
-		_s_flash_nvic = .;
+		PROVIDE(_s_flash_nvic = .);
 		KEEP(*(.vectors))
-		_e_flash_nvic = .;
+		PROVIDE(_e_flash_nvic = .);
 	} > FLASH
 
 	.startup : {
@@ -55,9 +55,9 @@ SECTIONS
 	} > FLASH
 
     .ARM.exidx : {
-     	__exidx_start = .;
+     	PROVIDE(__exidx_start = .);
      	*(.ARM.exidx*)
-    	__exidx_end = .;
+    	PROVIDE(__exidx_end = .);
     } > FLASH
 
 	.text : {
@@ -97,36 +97,36 @@ SECTIONS
 
 	.datainit : {
 		. = ALIGN(4);
-		_sdatainit = .;
+		PROVIDE(_sdatainit = .);
    		KEEP(*(.data .data.*))
-   		_edatainit = .;
+   		PROVIDE(_edatainit = .);
 	} > FLASH
 
 	/* RAM below here. */
 
 	.ramnvic (NOLOAD) : {
-		_s_ram_nvic = .;
+		PROVIDE(_s_ram_nvic = .);
 		KEEP(*(.ramnvic));
-		_e_ram_nvic = .;
+		PROVIDE(_e_ram_nvic = .);
 	} > RAM
 
 	.data . : {
 		. = ALIGN(4);
-		_sdata = .;
+		PROVIDE(_sdata = .);
 		. += SIZEOF(.datainit);
-		_edata = .;
+		PROVIDE(_edata = .);
 	} > RAM
 
 	.bss . : {
 		. = ALIGN(4);
-		_sbss = .;
-		__bss_start__ = .;
+		PROVIDE(_sbss = .);
+		PROVIDE(__bss_start__ = .);
 		*(.bss*)
 		*(COMMON)
 		. = ALIGN(4);
-		_ebss = .;
-		__bss_end = .;
-		__bss_end__ = .;
+		PROVIDE(_ebss = .);
+		PROVIDE(__bss_end = .);
+		PROVIDE(__bss_end__ = .);
 	} > RAM
 
 	_heapStart = .;
