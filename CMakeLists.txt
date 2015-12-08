@@ -3,8 +3,8 @@ project(julimin)
 
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
-set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
-set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
+#set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
+set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -finline-functions -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-exceptions -fno-rtti ${COMMON_OPTIONS}")
@@ -20,11 +20,11 @@ endif()
 
 set(NOS_SOURCE_FILES
         ${NOS_CHIP_FILES}
-        nos/nos.h
         nos/math/fixed_impl/fixed_func.cpp
         nos/core/syscalls.c
         nos/core/delay.cpp
-        nos/time/SystemTimer.cpp)
+        nos/time/SystemTimer.cpp
+        nos/analog/DAC.h)
 
 include_directories(nos)
 

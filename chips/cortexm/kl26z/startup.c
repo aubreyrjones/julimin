@@ -8,37 +8,45 @@
 #include <core/startup.h>
 #include <string.h>
 
-inline void spin_delay(uint32_t n) {
-	while (n--) __asm__ volatile ("nop");
-}
-
 void _panic(char const* message) {
+	const static uint32_t SHORT = 600000;
+	const static uint32_t LONG = 600000;
 	const uint32_t ledmask = 1 << 5;
-	while (1) {
+
+	// blink S.O.S
+	for (;;) {
 		for (int i = 0; i < 3; i++) {
 			FGPIOC_PSOR = ledmask;
-			spin_delay(15000);
+			spin_delay(SHORT);
 
 			FGPIOC_PCOR = ledmask;
-			spin_delay(30000);
+			spin_delay(LONG);
 		}
+
+		spin_delay(SHORT);
 
 		for (int i = 0; i < 3; i++){
 			FGPIOC_PSOR = ledmask;
-			spin_delay(30000);
+			spin_delay(LONG);
 
 			FGPIOC_PCOR = ledmask;
-			spin_delay(30000);
+			spin_delay(LONG);
 
 		}
+
+		spin_delay(SHORT);
 
 		for (int i = 0; i < 3; i++) {
 			FGPIOC_PSOR = ledmask;
-			spin_delay(15000);
+			spin_delay(SHORT);
 
 			FGPIOC_PCOR = ledmask;
-			spin_delay(30000);
+			spin_delay(LONG);
 		}
+
+		spin_delay(LONG);
+		spin_delay(LONG);
+		spin_delay(LONG);
 	}
 }
 
@@ -132,6 +140,10 @@ void chip_start_core_clocks() {
 	SIM_SOPT2 = SIM_SOPT2_USBSRC_MASK | SIM_SOPT2_PLLFLLSEL_MASK | SIM_SOPT2_CLKOUTSEL(6)
 				| SIM_SOPT2_UART0SRC(1) | SIM_SOPT2_TPMSRC(1);
 
+	// wake from VLLS magic, release IO pins.
+	if (PMC_REGSC & PMC_REGSC_ACKISO_MASK) {
+		PMC_REGSC |= PMC_REGSC_ACKISO_MASK;
+	}
 
 	// initialize the SysTick counter
 //	SYST_RVR = (CPU_CORE_FREQUENCY / 1000) - 1;
@@ -150,11 +162,6 @@ void chip_move_vectors_to_ram() {
 }
 
 void chip_start_status_indicators() {
-	// wake from VLLS magic, release IO pins.
-	if (PMC_REGSC & PMC_REGSC_ACKISO_MASK) {
-		PMC_REGSC |= PMC_REGSC_ACKISO_MASK;
-	}
-
 	// set up LED pin
 	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK;
 	PORTC_PCR5 = PORT_PCR_MUX(1) | PORT_PCR_DSE_MASK | PORT_PCR_SRE_MASK;

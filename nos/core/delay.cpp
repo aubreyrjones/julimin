@@ -3,11 +3,8 @@
 //
 
 #include "delay.h"
+#include "chip.h"
 
 namespace nos {
-
-void spin(size_t n) {
-	while (n--) __asm__ volatile ("nop");
-}
 
 }

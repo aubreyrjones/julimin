@@ -5,6 +5,10 @@
 #ifndef JULIMIN_CHIP_SUPPORT_H
 #define JULIMIN_CHIP_SUPPORT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "MKL26Z4.h"
 #include "MKL26Z4_extension.h"
 #include "MKL26Z4_features.h"
@@ -56,7 +60,7 @@
 typedef void (*isr)(void);
 
 typedef struct {
-	void* stackStart;
+	void *stackStart;
 	isr reset;
 	isr nmi;
 	isr hardFault;
@@ -90,5 +94,13 @@ typedef struct {
 	isr portcd;
 } NVICTable;
 
+inline void spin_delay(uint32_t n) __attribute__ ((always_inline));
+inline void spin_delay(uint32_t n){
+	while (n--) __asm__ volatile ("nop");
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //JULIMIN_CHIP_SUPPORT_H

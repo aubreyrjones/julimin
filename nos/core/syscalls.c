@@ -17,7 +17,7 @@ void _start()  {
 	// do prestart stuff, if anything.
 	chip_prestart();
 
-	// start GPIO ports.
+	// start LEDs and debug serial (if present)
 	chip_start_status_indicators();
 
 	// set up the clocks

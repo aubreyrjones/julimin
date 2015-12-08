@@ -10,8 +10,7 @@
 namespace nos {
 
 /**
- * Implements a numerically-controller oscillator. Call `step()` every `1/sampleRate` seconds, and this will sample
- * the fixed-size table of size `2**TBITS` in real time, sampling the entire table in `1/frequency` seconds.
+ * Implements a numerically-controlled oscillator. Call `step()` every `1/sampleRate` seconds.
  *
  * While `setFrequency()` uses floating point operations to calculate internal values, the `step()` and `sample()`
  * functions are integer-only and suitable for use inside ISRs.
@@ -24,7 +23,6 @@ public:
 	static constexpr uint32_t fractBits = 32 - TBITS;
 	static constexpr float intBitsFloat = positive_power(2, intBits);
 	static constexpr float fractBitsFloat = positive_power(2, fractBits);
-	static constexpr float invIntBitsFloat = 1.0f / fractBitsFloat;
 
 protected:
 	uint32_t sampleRate;
@@ -34,7 +32,7 @@ protected:
 	uint32_t accumulator = 0;
 	uint32_t phaseIncrement = 0;
 
-	uint32_t _index; // current index
+	uint32_t index = 0; // current index
 
 public:
 
@@ -63,13 +61,13 @@ public:
 	/** Step function, integer-only, suitable for use in a real-time ISR. */
 	void step() volatile {
 		accumulator += phaseIncrement;
-		_index = bitmask(intBits) & (accumulator >> fractBits);
+		index = bitmask(intBits) & (accumulator >> fractBits);
 		_mem_barrier();
 	}
 
-	uint32_t const volatile& getIndex() volatile const { return _index; }
+	uint32_t const volatile& getIndex() volatile const { return index; }
 
-	uint32_t const volatile& i() volatile const { return getIndex(); }
+	uint32_t const volatile& operator*() volatile const { return getIndex(); }
 };
 
 }
