@@ -7,13 +7,16 @@
 
 nos::NCO<uint16_t, 9> osc1(44100, &voice1[0]);
 
-void blink() {
-	static bool on = false;
-	nos::setStatusLEDState((on = !on));
+void ncoblink() {
+	osc1.step();
+	nos::setStatusLEDState(osc1.sample() > 2048);
 }
 
 int main() {
-	nos::SystemTimer timer(35, blink);
 
-	return 0;
+	osc1.setFrequency(12);
+
+	nos::SystemTimer volatile timer(44100, ncoblink);
+
+	return 0; // our timer interrupt is still running
 }

@@ -14,10 +14,10 @@ extern int main() __attribute__ ((section(".text"), used));
 /** Startup routine for core. */
 void _start();
 
-void abort(void) __attribute__((noreturn));
+void abort(void)  __attribute__((noreturn));;
 
 /** Stop into an error condition. */
-void _abort(void);
+void _abort(void)  __attribute__((noreturn));;
 
 /** newlib compliance, always returns 1. */
 pid_t _getpid(void);

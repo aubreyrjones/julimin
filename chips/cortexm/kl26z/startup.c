@@ -8,6 +8,40 @@
 #include <core/startup.h>
 #include <string.h>
 
+inline void spin_delay(uint32_t n) {
+	while (n--) __asm__ volatile ("nop");
+}
+
+void _panic(char const* message) {
+	const uint32_t ledmask = 1 << 5;
+	while (1) {
+		for (int i = 0; i < 3; i++) {
+			FGPIOC_PSOR = ledmask;
+			spin_delay(15000);
+
+			FGPIOC_PCOR = ledmask;
+			spin_delay(30000);
+		}
+
+		for (int i = 0; i < 3; i++){
+			FGPIOC_PSOR = ledmask;
+			spin_delay(30000);
+
+			FGPIOC_PCOR = ledmask;
+			spin_delay(30000);
+
+		}
+
+		for (int i = 0; i < 3; i++) {
+			FGPIOC_PSOR = ledmask;
+			spin_delay(15000);
+
+			FGPIOC_PCOR = ledmask;
+			spin_delay(30000);
+		}
+	}
+}
+
 /** Defined in syscalls.c. */
 extern void _start();
 

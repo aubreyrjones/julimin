@@ -5,22 +5,26 @@
 #ifndef JULIMIN_NCO_H
 #define JULIMIN_NCO_H
 
-#include <math/fixed.h>
-
 namespace nos {
 
-template<class TVAL, int TBITS>
+
+
+template<class TVAL, uint32_t TBITS>
 class NCO {
 public:
-	typedef fixed_point<32 - TBITS> accum_t;
 	typedef TVAL value_type;
+	static constexpr uint32_t intBits = TBITS;
+	static constexpr uint32_t fractBits = 32 - TBITS;
+	static constexpr float intBitsFloat = positive_power(2, intBits);
+	static constexpr float fractBitsFloat = positive_power(2, fractBits);
+	static constexpr float invIntBitsFloat = 1.0f / fractBitsFloat;
 
 protected:
 	uint32_t sampleRate;
-	uint32_t frequency = 0;
+	float frequency = 0.0f;
 
-	accum_t accumulator = 0;
-	accum_t phaseIncrement = 0;
+	uint32_t accumulator = 0;
+	uint32_t phaseIncrement = 0;
 
 	value_type const* table;
 	value_type value; // current value
@@ -30,21 +34,26 @@ public:
 
 	}
 
-	void setFrequency(uint32_t const &freq) {
+	void setFrequency(float const& freq) {
+		// there's no fixed point base that covers this all, leave it to the float emulation, luckily this isn't a
+		// tight loop. The actual synthesis is happening in integer land.
 		frequency = freq;
-		phaseIncrement = accum_t((frequency << TBITS) / sampleRate);
+
+		float phIncr = (frequency * intBitsFloat) / sampleRate;
+
+		phaseIncrement = static_cast<uint32_t>(phIncr * fractBitsFloat);
 	}
 
 	void step() {
 		accumulator += phaseIncrement;
-		value = table[accumulator.integerPart()];
+		value = table[bitmask(intBits) & (accumulator >> fractBits)];
 	}
 
 	value_type sample() {
 		return value;
 	}
 
-	uint32_t const &getFrequency() {
+	float const& getFrequency() {
 		return frequency;
 	}
 };

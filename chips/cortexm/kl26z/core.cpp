@@ -3,8 +3,6 @@
 //
 
 #include <core/led.h>
-#include <core/errors.h>
-#include <core/delay.h>
 #include "chip_support.h"
 
 
@@ -17,16 +15,4 @@ void setStatusLEDState(bool ledLighted) {
 		FGPIOC_PCOR = (1 << 5);
 	}
 }
-
-void panic(char const* message) {
-	// TODO: serial debugging
-
-	constexpr size_t n = 50000;
-
-	setStatusLEDState(true);
-	spin(n);
-	setStatusLEDState(false);
-	spin(3 * n);
-}
-
 };

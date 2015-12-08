@@ -7,6 +7,7 @@
 
 #include "startup.h"
 #include "syscalls.h"
+#include <stdint.h>
 
 extern int errno;
 void* __dso_handle;
@@ -51,12 +52,13 @@ void _start()  {
 	_exit(main());
 }
 
+
 void abort(void) {
-	_exit(0);
+	_abort();
 }
 
 void _abort(void) {
-	_exit(0);
+	_panic("ABORT");
 }
 
 void*_sbrk(ptrdiff_t increment) {
