@@ -7,6 +7,11 @@
 
 namespace nos {
 
+template <typename T>
+T bitmask(T const& nBits) {
+	return ((1 << nBits) - 1) ^ (1 << nBits);
+}
+
 typedef
 void (*VoidFunc)();
 

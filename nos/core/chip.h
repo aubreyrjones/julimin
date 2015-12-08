@@ -11,11 +11,11 @@
 extern NVICTable _nvicTable;
 
 inline void _mem_barrier() {
-	asm volatile ("dmb");
+	__asm__ volatile ("dmb");
 }
 
 inline void _mem_sync() {
-	asm volatile ("dsb");
+	__asm__ volatile ("dsb");
 }
 
 #endif //JULIMIN_CHIP_H

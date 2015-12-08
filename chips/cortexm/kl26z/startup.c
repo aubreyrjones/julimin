@@ -112,7 +112,7 @@ void chip_move_vectors_to_ram() {
 
 	SCB_VTOR = (uint32_t) &_s_ram_nvic;
 
-	asm volatile ("dsb");
+	__asm__ volatile ("dsb");
 }
 
 void chip_start_status_indicators() {

@@ -30,7 +30,7 @@ include_directories(nos)
 
 # ================================
 
-set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES} nos/core/errors.h)
+set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES} nos/core/errors.h tables/voices.h tables/voices.cpp)
 add_executable(julimin ${SOURCE_FILES})
 target_link_libraries(julimin stdc++ c m gcc)
 

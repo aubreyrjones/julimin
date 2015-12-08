@@ -3,10 +3,9 @@
 #include <core/delay.h>
 #include <time/SystemTimer.h>
 #include <time/NCO.h>
+#include "tables/voices.h"
 
-uint32_t table[] = {1, 0};
-
-nos::NCO<uint32_t, 12> osc1(44100, table);
+nos::NCO<uint16_t, 9> osc1(44100, &voice1[0]);
 
 void blink() {
 	static bool on = false;

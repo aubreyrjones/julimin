@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #endif
 
+#include "../../core/types.h"
 #include "fixed_func.h"
 
 namespace fixedpoint {
@@ -48,6 +49,8 @@ template <int p>
 struct fixed_point {
 	int32_t intValue;
 	constexpr static int precision = p;
+	constexpr static int32_t fractionMask = nos::bitmask(precision);
+	constexpr static int32_t shiftedIntegerMask = nos::bitmask(sizeof(int32_t) * 8 - precision);
 	
 	fixed_point() {}
 
@@ -59,7 +62,10 @@ struct fixed_point {
 	explicit fixed_point(float f) : intValue(float2fix<p>(f)) {}
 
 	explicit fixed_point(double f) : intValue(float2fix<p>((float)f)) {}
-	
+
+	inline int32_t integerPart() const { return (intValue >> precision) & shiftedIntegerMask; }
+	inline int32_t fractionPart() const { return intValue & fractionMask; }
+
 	fixed_point& operator += (fixed_point r) { intValue += r.intValue; return *this; }
 	fixed_point& operator -= (fixed_point r) { intValue -= r.intValue; return *this; }
 	fixed_point& operator *= (fixed_point r) { intValue = fixmul<p>(intValue, r.intValue); return *this; }
