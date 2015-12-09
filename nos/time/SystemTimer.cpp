@@ -17,6 +17,8 @@ SystemTimer::SystemTimer(uint32_t frequency, VoidFunc isr) {
 
 	_ins = this;
 
+	SYSTICK_CSR |= SYSTICK_CSR_CLKSOURCE;
+
 	uint32_t ticksIn10ms = SYSTICK_CALIB;
 	uint32_t ticksInPeriod;
 	if (!ticksIn10ms) {
@@ -34,7 +36,7 @@ SystemTimer::SystemTimer(uint32_t frequency, VoidFunc isr) {
 
 	_mem_barrier();
 
-	SYSTICK_CSR |= SYSTICK_CSR_CLKSOURCE | SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENABLE;
+	SYSTICK_CSR |= SYSTICK_CSR_TICKINT | SYSTICK_CSR_ENABLE;
 }
 
 SystemTimer::~SystemTimer() {

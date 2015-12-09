@@ -9,9 +9,9 @@
 extern "C" {
 #endif
 
-#include "MKL26Z4.h"
-#include "MKL26Z4_extension.h"
-#include "MKL26Z4_features.h"
+#include <MKL26Z4.h>
+#include <MKL26Z4_extension.h>
+#include <MKL26Z4_features.h>
 
 #define SCB_CPUID		(*(const    uint32_t *)0xE000ED00) // CPUID Base Register
 #define SCB_ICSR		(*(volatile uint32_t *)0xE000ED04) // Interrupt Control and State

@@ -19,7 +19,10 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(OBJCOPY_EXE arm-none-eabi-objcopy)
 set(UPLOAD_HEX_EXE "${CMAKE_CURRENT_SOURCE_DIR}/load-tlc.sh")
 
+include_directories("${KSDK}/platform/CMSIS/Include")
+
 # chip specific
+include_directories("${KSDK}/platform/devices/MKL26Z4/include" "${KSDK}/platform/devices/MKL26Z4/startup")
 set(COMMON_EMBED_OPTIONS "-march=armv6-m -mtune=cortex-m0plus -mthumb -mfloat-abi=soft -T ${CMAKE_CURRENT_SOURCE_DIR}/chips/cortexm/memory_map.ld")
 
 include_directories(chips/cortexm chips/cortexm/kl26z)
