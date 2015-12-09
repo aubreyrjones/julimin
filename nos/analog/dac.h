@@ -10,17 +10,17 @@
 
 namespace nos {
 
-class DAC {
+class dac {
 protected:
 	volatile DAC_Type* dacPort;
 
 public:
-	DAC(DAC_MemMapPtr dacPort) : dacPort(dacPort) {
+	dac(DAC_MemMapPtr dacPort) : dacPort(dacPort) {
 		SIM_SCGC6 |= SIM_SCGC6_DAC0_MASK;
 		dacPort->C0 |= DAC_C0_DACEN_MASK | DAC_C0_DACRFS_MASK;
 	}
 
-	~DAC() {
+	~dac() {
 		dacPort->C0 = 0; // disable everything
 		SIM_SCGC6 &= ~SIM_SCGC6_DAC0_MASK;
 	}

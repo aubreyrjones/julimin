@@ -4,7 +4,7 @@ project(julimin)
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
 set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
-set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -finline-functions -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
+set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -fno-builtin -finline-functions -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-exceptions -fno-rtti ${COMMON_OPTIONS}")
@@ -24,13 +24,13 @@ set(NOS_SOURCE_FILES
         nos/core/syscalls.c
         nos/core/delay.cpp
         nos/time/SystemTimer.cpp
-        nos/analog/DAC.h nos/comm/i2c.cpp nos/comm/i2c.h)
+        nos/analog/dac.h nos/comm/i2c.cpp nos/comm/i2c.h)
 
 include_directories(nos)
 
 # ================================
 
-set(SOURCE_FILES main.cpp ${NOS_SOURCE_FILES} nos/core/errors.h tables/voices.h tables/voices.cpp)
+set(SOURCE_FILES main.cpp ${KSDK_SOURCE_FILES} ${NOS_SOURCE_FILES} nos/core/errors.h tables/voices.h tables/voices.cpp)
 add_executable(julimin ${SOURCE_FILES})
 target_link_libraries(julimin stdc++ c m gcc)
 
