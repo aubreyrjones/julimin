@@ -12,7 +12,7 @@ namespace nos {
 
 class DAC {
 protected:
-	DAC_MemMapPtr volatile dacPort;
+	volatile DAC_Type* dacPort;
 
 public:
 	DAC(DAC_MemMapPtr dacPort) : dacPort(dacPort) {

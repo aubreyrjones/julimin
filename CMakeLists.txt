@@ -3,7 +3,7 @@ project(julimin)
 
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
-#set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
+set(MAX_OPTIMIZE "-Os -fwhole-program -flto")
 set(COMMON_OPTIONS "-Wall -Wno-unknown-pragmas -ffunction-sections -fdata-sections -specs=nano.specs -finline-functions -nostdlib -nostartfiles -ffast-math ${MAX_OPTIMIZE} -Wl,--gc-sections")
 
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -std=c11 ${COMMON_OPTIONS}")
@@ -24,7 +24,7 @@ set(NOS_SOURCE_FILES
         nos/core/syscalls.c
         nos/core/delay.cpp
         nos/time/SystemTimer.cpp
-        nos/analog/DAC.h)
+        nos/analog/DAC.h nos/comm/i2c.cpp nos/comm/i2c.h)
 
 include_directories(nos)
 

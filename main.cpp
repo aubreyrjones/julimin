@@ -7,7 +7,7 @@
 #include <analog/DAC.h>
 #include "tables/voices.h"
 
-constexpr uint32_t SAMPLE_RATE = 22000;
+constexpr uint32_t SAMPLE_RATE = 44100;
 
 nos::DAC dac1(DAC0_BASE_PTR);
 nos::NCO<uint16_t, 9> osc1(SAMPLE_RATE);
