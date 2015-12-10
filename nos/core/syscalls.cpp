@@ -24,8 +24,8 @@ void _start()  {
 	chip_start_core_clocks();
 
 	// copy data from initializer
-	extern char _sdata, _edata, _sdatainit;
-	memcpy(&_sdata, &_sdatainit, &_edata - &_sdata);
+	extern char _sdata, _edata, _etext;
+	memcpy(&_sdata, &_etext, &_edata - &_sdata);
 
 	// zero bss
 	extern char _sbss, _ebss;

@@ -95,12 +95,7 @@ SECTIONS
 		*(.rodata*)
 	} > FLASH
 
-	.datainit : {
-		. = ALIGN(4);
-		PROVIDE(_sdatainit = .);
-   		KEEP(*(.data .data.*))
-   		PROVIDE(_edatainit = .);
-	} > FLASH
+	_etext = .;
 
 	/* RAM below here. */
 
@@ -110,14 +105,14 @@ SECTIONS
 		PROVIDE(_e_ram_nvic = .);
 	} > RAM
 
-	.data . : {
+	.data : AT(_etext) {
 		. = ALIGN(4);
 		PROVIDE(_sdata = .);
 		KEEP(*(.data .data.*))
 		PROVIDE(_edata = .);
 	} > RAM
 
-	.bss . : {
+	.bss : {
 		. = ALIGN(4);
 		PROVIDE(_sbss = .);
 		PROVIDE(__bss_start__ = .);

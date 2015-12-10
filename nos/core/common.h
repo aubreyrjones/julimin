@@ -5,6 +5,9 @@
 #ifndef JULIMIN_TYPES_H
 #define JULIMIN_TYPES_H
 
+#include <stdint.h>
+#include <stddef.h>
+
 namespace nos {
 
 /** Generate a bitmask with the least significant n bits filled. */
