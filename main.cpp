@@ -21,11 +21,9 @@ void ncoblink() {
 
 int main() {
 	nos::SystemTimer volatile timer(SAMPLE_RATE, ncoblink);
-	osc1.setFrequency(440.0f);
+	osc1.setFrequency(441.0f);
 
 	for (;;) {
-		nos::console.write("Hello world!\n\r");
-		nos::spin(500000);
 	}
 }
 

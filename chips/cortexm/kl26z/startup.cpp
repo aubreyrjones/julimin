@@ -10,10 +10,10 @@
 #include <comm/uart.h>
 
 void _panic(char const* message) {
-	//nos::console.write(message);
+	nos::console.write(message);
 
-	const static uint32_t SHORT = 300000;
-	const static uint32_t LONG = 600000;
+	const static uint32_t SHORT = 600000;
+	const static uint32_t LONG = 1200000;
 	const uint32_t ledmask = 1 << 5;
 
 	// blink S.O.S
