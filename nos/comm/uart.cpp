@@ -39,7 +39,6 @@ void Console::serviceInterrupt() volatile {
 	if (UART0_S1 & UART0_S1_TC_MASK) {
 		txActive = false;
 		UART0_C2 = TX_IDLE;
-		_mem_barrier();
 	}
 }
 
@@ -78,7 +77,6 @@ void Console::startTX() volatile {
 void Console::requestTX() volatile {
 	if (!txActive) {
 		txActive = true;
-		_mem_barrier();
 
 		startTX();
 	}
