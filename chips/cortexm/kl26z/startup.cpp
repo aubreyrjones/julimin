@@ -100,10 +100,10 @@ void chip_start_core_clocks() {
 	// activate capacitors, use external reference crystal (16MHz crystal)
 	OSC0_CR = OSC_CR_SC8P_MASK | OSC_CR_SC2P_MASK | OSC_CR_ERCLKEN_MASK;
 
-	// take oscillator reference, set high freq range
+	// the clock is very high freq, take osc1 output
 	MCG_C2 = MCG_C2_RANGE0(2) | MCG_C2_EREFS_MASK;
 
-	// external reference (16MHz), divide by 512
+	// external reference, divide by 512
 	MCG_C1 =  MCG_C1_CLKS(2) | MCG_C1_FRDIV(4);
 
 	// wait for clocks to propagate
@@ -130,10 +130,10 @@ void chip_start_core_clocks() {
 	// wait for clock propagation
 	while ((MCG_S & MCG_S_CLKST_MASK) != MCG_S_CLKST(3)) {};
 
-	// set USB to use internal clock,
+	// set USB to use PLL / 2
 	// take PLL (instead of FLL) reference,
 	// output the osc reference clock on RTC_CLKOUT pin (16MHz)
-	// UART to use internal clock, TPM to take internal clock
+	// UART and TPM to to use PLL / 2
 	SIM_SOPT2 = SIM_SOPT2_USBSRC_MASK | SIM_SOPT2_PLLFLLSEL_MASK | SIM_SOPT2_CLKOUTSEL(6)
 				| SIM_SOPT2_UART0SRC(1) | SIM_SOPT2_TPMSRC(1);
 
@@ -141,9 +141,6 @@ void chip_start_core_clocks() {
 	if (PMC_REGSC & PMC_REGSC_ACKISO_MASK) {
 		PMC_REGSC |= PMC_REGSC_ACKISO_MASK;
 	}
-
-	__enable_irq();
-
 }
 
 void chip_move_vectors_to_ram() {

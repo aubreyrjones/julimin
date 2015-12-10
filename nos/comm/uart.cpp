@@ -45,7 +45,7 @@ void Console::serviceInterrupt() volatile {
 Console::Console(uint32_t baudrate) : baud(baudrate) {
 	SIM_SCGC4 |= SIM_SCGC4_UART0_MASK;
 
-	uint32_t targetBaudDivisor = BUS_FREQUENCY / (baudrate * 16);
+	uint32_t targetBaudDivisor = CONSOLE_DEVICE_BUS_FREQUENCY / (baudrate * 16);
 
 	UART0_BDL = static_cast<uint8_t>(0xff & (targetBaudDivisor));
 	UART0_BDH = static_cast<uint8_t>(0x1f & (targetBaudDivisor >> (3 + 8)));

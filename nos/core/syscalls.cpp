@@ -7,7 +7,7 @@
 
 #include "startup.h"
 #include "syscalls.h"
-#include <stdint.h>
+#include "chip.h"
 
 extern int errno;
 void* __dso_handle;
@@ -47,6 +47,8 @@ void _start()  {
 	for (func_ptr *p = &__init_array_start; p != &__init_array_end; ++p) {
 		(*p)();
 	}
+
+	__enable_irq();
 
 	// run the user's main, and then "exit".
 	_exit(main());
