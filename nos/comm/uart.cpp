@@ -30,12 +30,13 @@ void Console::serviceInterrupt() volatile {
 		uint8_t c;
 		if (txBuffer.get(c)) {
 			UART0_D = c;
-			if (txBuffer.empty()) {
+			if (txBuffer.getSize() == 1) {
 				UART0_C2 = TX_FINISHING;
 			}
 		}
 	}
-	else if (UART0_S1 & UART0_S1_TC_MASK) {
+
+	if (UART0_S1 & UART0_S1_TC_MASK) {
 		txActive = false;
 		UART0_C2 = TX_IDLE;
 		_mem_barrier();

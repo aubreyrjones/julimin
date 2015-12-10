@@ -20,24 +20,12 @@ void ncoblink() {
 }
 
 int main() {
-
-//	nos::setStatusLEDState(true);
-
-
+	nos::SystemTimer volatile timer(SAMPLE_RATE, ncoblink);
+	osc1.setFrequency(440.0f);
 
 	for (;;) {
 		nos::console.write("Hello world!\n\r");
-//		nos::toggleStatusLEDState();
+		nos::spin(500000);
 	}
-
-	//while (true) {nos::console.write("Hello");}
-
-//	osc1.setFrequency(440.0f);
-//
-//	nos::SystemTimer volatile timer(SAMPLE_RATE, ncoblink);
-//
-//	for(;;) {};
-//
-//	return 0;
 }
 
