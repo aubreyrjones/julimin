@@ -15,4 +15,8 @@ void setStatusLEDState(bool ledLighted) {
 		FGPIOC_PCOR = (1 << 5);
 	}
 }
+
+void toggleStatusLEDState() {
+	FGPIOC_PTOR = (1 << 5);
+}
 };

@@ -10,6 +10,8 @@ namespace nos {
 /** Set the state of the status LED (whatever that means to your board). */
 void setStatusLEDState(bool ledLighted);
 
+void toggleStatusLEDState();
+
 }
 
 #endif //JULIMIN_LED_H

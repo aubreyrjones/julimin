@@ -19,8 +19,7 @@ constexpr T positive_power(T const base, int const exponent) {
 	return (exponent == 0) ? 1 : base * positive_power(base, exponent - 1);
 }
 
-typedef
-void (*VoidFunc)();
+typedef void (*VoidFunc)();
 
 }
 

@@ -113,7 +113,7 @@ SECTIONS
 	.data . : {
 		. = ALIGN(4);
 		PROVIDE(_sdata = .);
-		. += SIZEOF(.datainit);
+		KEEP(*(.data .data.*))
 		PROVIDE(_edata = .);
 	} > RAM
 

@@ -6,11 +6,14 @@
 #define JULIMIN_ERRORS_H
 
 #include "startup.h"
+#include "led.h"
 
 namespace nos {
 
 /** Panic with a short message. */
 inline void panic(char const* message) { _panic(message); }
+
+inline void lockup() { setStatusLEDState(true); while (true) __asm__ volatile ("nop"); }
 
 }
 

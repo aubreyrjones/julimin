@@ -9,6 +9,10 @@
 #include <string.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern int main() __attribute__ ((section(".text"), used));
 
 /** Startup routine for core. */
@@ -33,5 +37,10 @@ void _exit(int status)  __attribute__((noreturn));
 
 /** Modify the heap pointer. */
 void* _sbrk(ptrdiff_t increment);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif //JULIMIN_SYSCALLS_H

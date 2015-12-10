@@ -5,9 +5,8 @@
 #include <time/nco.h>
 #include <core/errors.h>
 #include <analog/dac.h>
+#include <comm/uart.h>
 #include "tables/voices.h"
-
-#include <fsl_i2c_master_driver.h>
 
 constexpr uint32_t SAMPLE_RATE = 44100;
 
@@ -22,22 +21,23 @@ void ncoblink() {
 
 int main() {
 
-	i2c_master_state_t i2cMaster;
-	i2c_device_t device = {
-			.address = 0x7fU,
-			.baudRate_kbps = 400
-	};
+//	nos::setStatusLEDState(true);
 
-	I2C_DRV_MasterInit(0, &i2cMaster);
 
-	osc1.setFrequency(440.0f);
 
-	nos::setStatusLEDState(true);
+	for (;;) {
+		nos::console.write("Hello world!\n\r");
+//		nos::toggleStatusLEDState();
+	}
 
-	nos::SystemTimer volatile timer(SAMPLE_RATE, ncoblink);
+	//while (true) {nos::console.write("Hello");}
 
-	for(;;) {};
-
-	return 0;
+//	osc1.setFrequency(440.0f);
+//
+//	nos::SystemTimer volatile timer(SAMPLE_RATE, ncoblink);
+//
+//	for(;;) {};
+//
+//	return 0;
 }
 

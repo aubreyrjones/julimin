@@ -6,10 +6,13 @@
 
 #include "chip_support.h"
 #include <core/startup.h>
-#include <string.h>
+#include <core/syscalls.h>
+#include <comm/uart.h>
 
 void _panic(char const* message) {
-	const static uint32_t SHORT = 600000;
+	//nos::console.write(message);
+
+	const static uint32_t SHORT = 300000;
 	const static uint32_t LONG = 600000;
 	const uint32_t ledmask = 1 << 5;
 
@@ -50,21 +53,15 @@ void _panic(char const* message) {
 	}
 }
 
-/** Defined in syscalls.c. */
-extern void _start();
-
 /** Fault ISR, infinite loop. */
 void fault_isr(void) {
-	FGPIOC_PSOR = (1 << 5);
 	abort();
 }
 
 void nmi_isr(void) {
-	FGPIOC_PSOR = (1 << 5);
 	abort();
 }
 void unused_isr(void) {
-	FGPIOC_PSOR = (1 << 5);
 	abort();
 }
 
@@ -78,7 +75,7 @@ NVICTable _vectorTable = {
 };
 
 __attribute__ ((section(".ramnvic"), used))
-NVICTable _nvicTable;
+NVICTable volatile _nvicTable;
 
 
 __attribute__ ((section(".flashconfig"), used))
@@ -145,11 +142,8 @@ void chip_start_core_clocks() {
 		PMC_REGSC |= PMC_REGSC_ACKISO_MASK;
 	}
 
-	// initialize the SysTick counter
-//	SYST_RVR = (CPU_CORE_FREQUENCY / 1000) - 1;
-//	SYST_CVR = 0;
-//	SYST_CSR = SYST_CSR_CLKSOURCE | SYST_CSR_TICKINT | SYST_CSR_ENABLE;
-//	SCB_SHPR3 = 0x20200000;  // Systick = priority 32
+	__enable_irq();
+
 }
 
 void chip_move_vectors_to_ram() {
@@ -162,8 +156,14 @@ void chip_move_vectors_to_ram() {
 }
 
 void chip_start_status_indicators() {
+
 	// set up LED pin
 	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK;
 	PORTC_PCR5 = PORT_PCR_MUX(1) | PORT_PCR_DSE_MASK | PORT_PCR_SRE_MASK;
 	FGPIOC_PDDR |= (1 << 5);
+
+	// set up console pins
+	SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
+	PORTB_PCR16 |= PORT_PCR_MUX(3);
+	PORTB_PCR17 |= PORT_PCR_MUX(3);
 }

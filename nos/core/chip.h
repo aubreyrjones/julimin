@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 /** In-RAM vector table. */
-extern NVICTable _nvicTable;
+extern NVICTable volatile _nvicTable;
 
 inline void _mem_barrier() {
 	__asm__ volatile ("dmb");
@@ -25,6 +25,23 @@ inline void _mem_sync() {
 #ifdef __cplusplus
 }
 #endif
+
+
+namespace nos {
+
+struct IRQDisableRAII {
+	IRQDisableRAII() {
+		__disable_irq();
+	}
+
+	~IRQDisableRAII() {
+		__enable_irq();
+	}
+};
+
+#define NOS_NOIRQ ::nos::IRQDisableRAII volatile __irqDisableRAII;
+
+}
 
 
 #endif //JULIMIN_CHIP_H
