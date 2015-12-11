@@ -7,6 +7,7 @@
 #include <analog/dac.h>
 #include <comm/uart.h>
 #include <comm/i2c.h>
+#include <core/errors.h>
 #include "tables/voices.h"
 
 // called after everything is set up, after IRQ are enabled, but before the call to main
@@ -34,8 +35,17 @@ int main() {
 	nos::SystemTimer volatile timer(SAMPLE_RATE, ncoblink);
 	nos::I2CMaster volatile i2c(I2C0_BASE_PTR);
 
+	nos::console.write("Boot: ");
+	nos::spin(500000);
+
+	uint8_t ireg;
+
 	for (;;) {
-		nos::console.write("Hello!\n\r");
+		if (!i2c.readRegisters(0x10, 0, &ireg)) {
+			nos::panic("Failed to read.");
+		}
+		nos::console.writeHex(ireg);
+		nos::console.write(". ");
 		nos::spin(10000000);
 	}
 }

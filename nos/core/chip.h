@@ -34,8 +34,12 @@ struct IRQDisableRAII {
 		__disable_irq();
 	}
 
-	~IRQDisableRAII() {
+	void unlock() volatile {
 		__enable_irq();
+	}
+
+	~IRQDisableRAII() {
+		unlock();
 	}
 };
 

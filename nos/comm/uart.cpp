@@ -102,7 +102,7 @@ uint32_t Console::write(char const *data, uint32_t len) volatile {
 	return write(reinterpret_cast<uint8_t const*>(data), len);
 }
 
-void Console::write(char const *str) volatile {
+void Console::write(char const* str) volatile {
 	while (*str) {
 		if (txBuffer.put(*str)){
 			++str;
@@ -115,4 +115,15 @@ void Console::write(char const *str) volatile {
 	requestTX();
 }
 
+static const uint8_t hexConvTable[] =
+		{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+void Console::writeHex(uint8_t byte) volatile {
+	while (!txBuffer.put(hexConvTable[0x0f & (byte >> 4)])){
+		requestTX();
+	}
+	while (!txBuffer.put(hexConvTable[0x0f & byte ])){
+		requestTX();
+	}
+}
 }

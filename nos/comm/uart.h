@@ -35,6 +35,8 @@ public:
 	uint32_t write(char const* data, uint32_t len) volatile;
 
 	void write(char const* str) volatile;
+
+	void writeHex(uint8_t byte) volatile;
 };
 
 extern Console volatile console;
