@@ -12,6 +12,12 @@
 extern int errno;
 void* __dso_handle;
 
+extern "C" {
+void default_main_startup() { }
+}
+
+void main_startup() __attribute__((weak, alias("default_main_startup")));
+
 void _start() __attribute__((section(".startup")));
 void _start()  {
 	// do prestart stuff, if anything.
@@ -49,6 +55,8 @@ void _start()  {
 	}
 
 	__enable_irq();
+
+	main_startup();
 
 	// run the user's main, and then "exit".
 	_exit(main());
