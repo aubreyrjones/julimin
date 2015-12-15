@@ -52,6 +52,8 @@ extern "C" {
 #define CPU_CORE_FREQUENCY 48000000
 #define BUS_FREQUENCY CPU_CORE_FREQUENCY
 #define CONSOLE_DEVICE_BUS_FREQUENCY BUS_FREQUENCY // really it's PLL / 2, but that's the same divider as bus freq.
+#define NOS_N_I2C_INSTANCES 2
+
 #define NVIC_NUM_INTERRUPTS 32
 #define NVIC_SET_PRIORITY(irqnum, priority) (*((uint32_t *)0xE000E400 + ((irqnum) >> 2)) = (*((uint32_t *)0xE000E400 + ((irqnum) >> 2)) & (~(0xFF << (8 * ((irqnum) & 3))))) | (((priority) & 0xFF) << (8 * ((irqnum) & 3))))
 #define NVIC_GET_PRIORITY(irqnum) (*((uint32_t *)0xE000E400 + ((irqnum) >> 2)) >> (8 * ((irqnum) & 3)) & 255)

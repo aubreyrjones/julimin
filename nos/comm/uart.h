@@ -36,6 +36,8 @@ public:
 
 	void write(char const* str) volatile;
 
+	void writeLine(char const* str) volatile;
+
 	void writeHex(uint8_t byte) volatile;
 };
 

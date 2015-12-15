@@ -17,6 +17,15 @@ using fixed = fixedpoint::fixed_point<16>;
 
 }
 
+
+constexpr nos::fixed_point<12> operator "" _x12(long double d) {
+	return nos::fixed_point<12>((int32_t) (d * (1 << nos::fixed::precision)), true);
+}
+
+constexpr nos::fixed_point<20> operator "" _x20(long double d) {
+	return nos::fixed_point<20>((int32_t) (d * (1 << nos::fixed::precision)), true);
+}
+
 constexpr nos::fixed operator "" _f(long double d) {
 	return nos::fixed((int32_t) (d * (1 << nos::fixed::precision)), true);
 }

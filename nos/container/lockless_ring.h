@@ -59,6 +59,7 @@ namespace nos {
 			return front - back;
 		}
 
+
 		bool put(T const& value) volatile {
 			NOS_NOIRQ;
 
@@ -72,6 +73,25 @@ namespace nos {
 			return true;
 		}
 
+		bool put_b(T const& value) volatile {
+			restart:
+			while (full()) { }
+
+
+			{
+				NOS_NOIRQ;
+				if (_full()) {
+					goto restart;
+				}
+
+				buffer[modcap(front)] = value;
+				++front;
+				_mem_barrier();
+				return true;
+			}
+		}
+
+
 		bool get(T & out) volatile {
 			NOS_NOIRQ;
 
@@ -83,6 +103,21 @@ namespace nos {
 			++back;
 			_mem_barrier();
 			return true;
+		}
+
+		void get_b(T & out) volatile {
+			restart:
+			while (empty()) { }
+
+			{
+				NOS_NOIRQ;
+				if (_empty())
+					goto restart;
+
+				out = buffer[modcap(back)];
+				++back;
+				_mem_barrier();
+			}
 		}
 	};
 }
