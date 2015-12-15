@@ -27,7 +27,7 @@ public:
 protected:
 	uint32_t sampleRate;
 	float const sampleRateConstant;
-	float frequency = 0.0f;
+	nos::fixed frequency = 0.0_f;
 
 	uint32_t accumulator = 0;
 	uint32_t phaseIncrement = 0;
@@ -42,19 +42,20 @@ public:
 	{ }
 
 	/**
-	 * Set the frequency at which to sample. Use of float is unfortunate, but expedient to cover all possible
-	 * supported frequencies.*/
-	void setFrequency(float const& freq) volatile {
-		frequency = freq;
+	 * Set the frequency at which to sample. Makes internal use of fixed-to-float conversion. */
+	void setFrequency(nos::fixed const& freq) volatile {
+		*const_cast<nos::fixed*>(&frequency) = freq;
 
-		float phIncr = frequency * sampleRateConstant;
+		float floatFreq = fixedpoint::fix2float<nos::fixed::precision>(freq.intValue);
+
+		float phIncr = floatFreq * sampleRateConstant;
 
 		phaseIncrement = static_cast<uint32_t>(phIncr * fractBitsFloat);
 
 		_mem_barrier();
 	}
 
-	float const& getFrequency() {
+	nos::fixed const& getFrequency() {
 		return frequency;
 	}
 

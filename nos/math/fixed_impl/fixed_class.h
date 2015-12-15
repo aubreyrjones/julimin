@@ -63,34 +63,40 @@ struct fixed_point {
 
 	explicit fixed_point(double f) : intValue(float2fix<p>((float)f)) {}
 
+	fixed_point(fixed_point const& o) : intValue(o.intValue) {}
+	fixed_point(fixed_point const volatile& o) : intValue(o.intValue) {}
+	fixed_point& operator=(fixed_point const& o) { intValue = o.intValue; return *this;}
+	fixed_point volatile& operator=(fixed_point const& o) volatile { intValue = o.intValue; return *this;}
+
 	inline int32_t integerPart() const { return (intValue >> precision) & shiftedIntegerMask; }
 	inline int32_t fractionPart() const { return intValue & fractionMask; }
 
-	fixed_point& operator += (fixed_point r) { intValue += r.intValue; return *this; }
+	fixed_point& operator += (fixed_point r)  { intValue += r.intValue; return *this; }
 	fixed_point& operator -= (fixed_point r) { intValue -= r.intValue; return *this; }
 	fixed_point& operator *= (fixed_point r) { intValue = fixmul<p>(intValue, r.intValue); return *this; }
 	fixed_point& operator /= (fixed_point r) { intValue = fixdiv<p>(intValue, r.intValue); return *this; }
 	
-	fixed_point& operator *= (int32_t r) { intValue *= r; return *this; }
-	fixed_point& operator /= (int32_t r) { intValue /= r; return *this; }
-	
-	fixed_point operator - () const { fixed_point x; x.intValue = -intValue; return x; }
-	fixed_point operator + (fixed_point r) const { fixed_point x = *this; x += r; return x;}
-	fixed_point operator - (fixed_point r) const { fixed_point x = *this; x -= r; return x;}
-	fixed_point operator * (fixed_point r) const { fixed_point x = *this; x *= r; return x;}
-	fixed_point operator / (fixed_point r) const { fixed_point x = *this; x /= r; return x;}
-	
-	bool operator == (fixed_point r) const { return intValue == r.intValue; }
-	bool operator != (fixed_point r) const { return !(*this == r); }
-	bool operator <  (fixed_point r) const { return intValue < r.intValue; }
-	bool operator >  (fixed_point r) const { return intValue > r.intValue; }
-	bool operator <= (fixed_point r) const { return intValue <= r.intValue; }
-	bool operator >= (fixed_point r) const { return intValue >= r.intValue; }
+	fixed_point& operator *= (int32_t r)  { intValue *= r; return *this; }
+	fixed_point& operator /= (int32_t r)  { intValue /= r; return *this; }
 
-	fixed_point operator + (int32_t r) const { fixed_point x = *this; x += r; return x;}
-	fixed_point operator - (int32_t r) const { fixed_point x = *this; x -= r; return x;}
-	fixed_point operator * (int32_t r) const { fixed_point x = *this; x *= r; return x;}
-	fixed_point operator / (int32_t r) const { fixed_point x = *this; x /= r; return x;}
+
+	fixed_point operator - () const  { fixed_point x; x.intValue = -intValue; return x; }
+	fixed_point operator + (fixed_point r) const volatile { fixed_point x = *this; x += r; return x;}
+	fixed_point operator - (fixed_point r) const volatile { fixed_point x = *this; x -= r; return x;}
+	fixed_point operator * (fixed_point r) const volatile { fixed_point x = *this; x *= r; return x;}
+	fixed_point operator / (fixed_point r) const volatile { fixed_point x = *this; x /= r; return x;}
+	
+	bool operator == (fixed_point r) const volatile { return intValue == r.intValue; }
+	bool operator != (fixed_point r) const volatile { return !(*this == r); }
+	bool operator <  (fixed_point r) const volatile { return intValue < r.intValue; }
+	bool operator >  (fixed_point r) const volatile { return intValue > r.intValue; }
+	bool operator <= (fixed_point r) const volatile { return intValue <= r.intValue; }
+	bool operator >= (fixed_point r) const volatile { return intValue >= r.intValue; }
+
+	fixed_point operator + (int32_t r) const volatile { fixed_point x = *this; x += r; return x;}
+	fixed_point operator - (int32_t r) const volatile { fixed_point x = *this; x -= r; return x;}
+	fixed_point operator * (int32_t r) const volatile { fixed_point x = *this; x *= r; return x;}
+	fixed_point operator / (int32_t r) const volatile { fixed_point x = *this; x /= r; return x;}
 };
 
 // Specializations for use with plain integers
