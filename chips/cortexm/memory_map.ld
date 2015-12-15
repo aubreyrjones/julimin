@@ -42,13 +42,14 @@ SECTIONS
 		PROVIDE(_e_flash_nvic = .);
 	} > FLASH
 
+	.flashconfig 0x400 : {
+		KEEP(*(.flashconfig))
+	} > FLASH
+
 	.startup : {
 		*(.startup)
 	} > FLASH
 
-	.flashconfig 0x400 : {
-		KEEP(*(.flashconfig))
-	} > FLASH
 
 	.ARM.extab : {
 		*(.ARM.extab*)

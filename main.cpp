@@ -11,17 +11,15 @@
 #include "tables/voices.h"
 
 uint32_t constexpr SAMPLE_RATE = 44100;
-nos::fixed volatile pitchStick = 0;
+uint32_t volatile inputAxes[2] = {2048, 2048};
 bool volatile pitchStickChanged = false;
 
 
 void pitchStickUpdateISR() {
-	int32_t newVal = ADC0_RA;
+	uint32_t newVal = ADC0_RA;
 
-	nos::fixed adjustedVal = (nos::fixed(newVal) / 4096.0_f) - 0.5_f;
-
-	if (adjustedVal != pitchStick) {
-		pitchStick = adjustedVal;
+	if (newVal != inputAxes[0]) {
+		inputAxes[0] = newVal;
 		pitchStickChanged = true;
 	}
 }
@@ -78,7 +76,8 @@ int main() {
 
 	for (;;) {
 		if (pitchStickChanged) {
-			nos::console.writeLine("Yo.");
+			nos::fixed pitchStick(nos::fixed((int32_t) inputAxes[0]) / 4096.0_f - 0.5_f);
+
 			fundamentalFrequency = centerPitch + (pitchStick * halfRange);
 			osc1.setFrequency(fundamentalFrequency);
 			pitchStickChanged = false;
