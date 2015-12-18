@@ -22,6 +22,9 @@ inline void _mem_sync() {
 	__asm__ volatile ("dsb");
 }
 
+extern int errno;
+extern void* __dso_handle;
+
 #ifdef __cplusplus
 }
 #endif

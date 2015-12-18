@@ -27,148 +27,58 @@ I2CMaster::I2CMaster(I2C_MemMapPtr port, uint32_t instanceNumber) : i2cPort(port
 	SIM_SCGC4 |= SIM_SCGC4_I2C0_MASK;
 	i2cPort->F = I2C_F_MULT(0) | I2C_F_ICR(0x27); // pin it at 100kHz on the 48MHz PLL divider
 	i2cPort->C1 = IDLE;
+
+	_nvicTable.i2c[instanceNumber] = _i2cIRQ[instanceNumber];
+	_mem_sync();
+	NVIC_EnableIRQ(I2C0_IRQn);
 }
 
 I2CMaster::~I2CMaster() {
+	NVIC_DisableIRQ(I2C0_IRQn);
 	i2cPort->C1 = 0;
-
-
 	SIM_SCGC4 &= ~SIM_SCGC4_I2C0_MASK;
-
 };
 
-void I2CMaster::s() volatile {
-	while (i2cPort->S & I2C_S_BUSY_MASK) {};
 
-	i2cPort->C1 = START;
+void I2CMaster::serviceIRQ() volatile {
 
-	while (! (i2cPort->S & I2C_S_BUSY_MASK)) {}
-}
+	uint8_t s = i2cPort->S;
+	i2cPort->S |= I2C_S_IICIF_MASK;
 
-void I2CMaster::rs() volatile {
-	i2cPort->C1 = RESET_START;
-}
-
-
-//bool I2CMaster::addressSlave(uint8_t const &addr) volatile {
-//	i2cPort->D = addr;
-//
-//	while (true) {
-//		uint8_t s = i2cPort->S;
-//		if (s & I2C_S_TCF_MASK){
-//			return true;
-//		}
-//
-//		if (s & I2C_S_RXAK_MASK) {
-//			panic("8");
-//			return false;
-//		}
-//
-//		if (s & I2C_S_ARBL_MASK) {
-//			panic("9");
-//			return false;
-//		}
-//	}
-//}
-
-
-bool I2CMaster::tx(uint8_t const &v) volatile {
-	i2cPort->D = v;
-	while (true) {
-		uint8_t s = i2cPort->S;
-		console.writeHex(i2cPort->S);
-		console.write(" ");
-
-
-		if (s & I2C_S_TCF_MASK) {
-			return true;
+	__disable_irq();
+	if (s & I2C_S_TCF_MASK) {
+		if (i2cPort->C1 & I2C_C1_TX_MASK) {
+			if (s & I2C_S_RXAK_MASK) {
+				errorCondition = true;
+			}
 		}
-
-		if (s & I2C_S_RXAK_MASK) {
-			panic("6");
-			return false;
-		}
-
-		if (s & I2C_S_ARBL_MASK) {
-			panic("7");
-			return false;
+		else {
+			bufferWord = i2cPort->D;
 		}
 	}
-}
 
-
-void I2CMaster::bogus_rx() volatile {
-	uint8_t volatile v = i2cPort->D;
-	v = v;
-}
-
-bool I2CMaster::rx(uint8_t & v) volatile {
-	while (true) {
-		uint8_t s = i2cPort->S;
-		if (s & I2C_S_TCF_MASK){
-			break;
-		}
-		if (s & (I2C_S_RXAK_MASK | I2C_S_ARBL_MASK)) {
-			panic("5");
-			return false;
-		}
+	if (s & I2C_S_ARBL_MASK) {
+		errorCondition = true;
 	}
-	v = i2cPort->D;
-	return true;
+
+	__enable_irq();
+
+	waitpoint.signal();
 }
 
-void I2CMaster::e() volatile {
-	i2cPort->C1 = IDLE;
-}
 
-void I2CMaster::srecv() volatile {
-	i2cPort->C1 = RECV;
-}
 
 /** Read n registers. Blocking. Busy. */
-bool I2CMaster::readRegisters(uint8_t const &slaveAddress, uint8_t const &reg, uint8_t *buf,
-							  size_t nRegisters) volatile {
-	s();
-	if (!tx(write_to(slaveAddress))) { // address
-		panic("1");
-		return false;
-	}
-	console.write("1 ");
+bool I2CMaster::readRegisters(uint8_t const &slaveAddress, uint8_t const &reg, uint8_t *buf, size_t nRegisters) volatile {
+	if (!start()) panic("1");
+	if (!transmit(write_to(32))) panic("2");
+	if (!transmit(0)) panic("3");
+	restart();
+	if (!transmit(read_from(32))) panic("4");
 
-	if (!tx(reg)) { // write register
-		panic("2");
-		return false;
-	}
-	console.write("2 ");
+	if (!receive(buf[0])) panic("5");
 
-	e();
-	spin(1000);
-	s();
-	//rs(); // restart
-
-	if (!tx(read_from(slaveAddress))) { // address again
-		panic("3");
-		return false;
-	}
-	console.write("3 ");
-
-	srecv(); // start receive
-
-	bogus_rx();
-
-	for (uint8_t *end = buf + nRegisters; buf != end; buf++) {
-		uint8_t v;
-		if (!rx(v)) {
-			panic("4");
-			return false;
-		}
-		console.write("4 ");
-		*buf = v;
-	}
-
-	e();
-
-	console.write("5 ");
+	panic("yo");
 
 	return true;
 }
@@ -178,4 +88,40 @@ bool I2CMaster::writeRegisters(uint8_t const &slaveAddress, uint8_t const &reg, 
 	return false;
 }
 
+bool I2CMaster::start() volatile {
+	i2cPort->C1 = START;
+
+	while (!(i2cPort->S & I2C_S_BUSY_MASK)) { if (errorCondition) return false; };
+
+	return true;
+}
+
+bool I2CMaster::wait() volatile {
+	if (!errorCondition) {
+		waitpoint.set();
+		waitpoint.wait();
+	}
+
+	return !errorCondition;
+}
+
+bool I2CMaster::transmit(uint8_t b) volatile {
+	i2cPort->D = b;
+	return wait();
+}
+
+bool I2CMaster::restart() volatile {
+	i2cPort->C1 = RESET_START;
+	return !errorCondition;
+}
+
+bool I2CMaster::receive(uint8_t &d) volatile {
+	i2cPort->C1 = RECV;
+
+	uint8_t throwaway;
+	throwaway = i2cPort->D; // fake read
+
+
+	return wait();
+}
 }

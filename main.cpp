@@ -30,8 +30,8 @@ void main_startup() {
 	// port b clock is already enabled for console
 
 	// set up i2c pins: mux 2 (i2c0), pullup enable, pull up (instead of down)
-//	PORTB_PCR2 |= PORT_PCR_MUX(2) | PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;
-//	PORTB_PCR3 |= PORT_PCR_MUX(2) | PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;
+	PORTB_PCR2 |= PORT_PCR_MUX(2) | PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;
+	PORTB_PCR3 |= PORT_PCR_MUX(2) | PORT_PCR_PE_MASK | PORT_PCR_PS_MASK;
 
 	// set up stick ADCs
 	SIM_SCGC5 |= SIM_SCGC5_PORTD_MASK;
@@ -70,10 +70,17 @@ void tick() {
 }
 
 int main() {
+	nos::console.writeLine("Booted");
+
+	nos::I2CMaster i2c(I2C0_BASE_PTR, 0);
+
 	osc1.setFrequency(fundamentalFrequency);
 
-	nos::SystemTimer volatile timer(SAMPLE_RATE, tick);
+	uint8_t i2cBuf[4];
+	i2c.readRegisters(1 << 5, 0x00, i2cBuf, 1);
 
+
+	nos::SystemTimer volatile timer(SAMPLE_RATE, tick);
 	for (;;) {
 		if (pitchStickChanged) {
 			nos::fixed pitchStick(nos::fixed((int32_t) inputAxes[0]) / 4096.0_f - 0.5_f);

@@ -21,32 +21,32 @@ protected:
 	static inline uint8_t write_to(uint8_t const& addr) { return (addr << 1) | WRITE; }
 	static inline uint8_t read_from(uint8_t const& addr) { return (addr << 1) | READ; }
 
-	static constexpr uint8_t IDLE = I2C_C1_IICEN_MASK;
-	static constexpr uint8_t START = I2C_C1_IICEN_MASK | I2C_C1_MST_MASK | I2C_C1_TX_MASK;
-	static constexpr uint8_t RESET_START = I2C_C1_IICEN_MASK |  I2C_C1_MST_MASK | I2C_C1_TX_MASK | I2C_C1_RSTA_MASK ;
-	static constexpr uint8_t RECV = I2C_C1_IICEN_MASK | I2C_C1_MST_MASK;
+	static constexpr uint8_t IDLE = I2C_C1_IICEN_MASK | I2C_C1_IICIE_MASK;
+	static constexpr uint8_t START = I2C_C1_IICEN_MASK | I2C_C1_IICIE_MASK | I2C_C1_MST_MASK | I2C_C1_TX_MASK;
+	static constexpr uint8_t RESET_START = I2C_C1_IICEN_MASK | I2C_C1_IICIE_MASK |  I2C_C1_MST_MASK | I2C_C1_TX_MASK | I2C_C1_RSTA_MASK ;
+	static constexpr uint8_t RECV = I2C_C1_IICEN_MASK |I2C_C1_IICIE_MASK | I2C_C1_MST_MASK;
+
 
 	I2C_Type volatile* i2cPort;
 	uint32_t instanceNumber;
+	WaitPoint waitpoint {};
 
-	//bool addressSlave(uint8_t const& addr) volatile;
-	void s() volatile;
-	void rs() volatile;
-	void srecv() volatile;
+	uint8_t bufferWord;
+	bool errorCondition = false;
 
-	bool tx(uint8_t const& v) volatile;
+	bool wait() volatile;
 
-	void bogus_rx() volatile;
-	bool rx(uint8_t & v) volatile;
-
-	void e() volatile;
+	bool start() volatile;
+	bool transmit(uint8_t b) volatile;
+	bool restart() volatile;
+	bool receive(uint8_t & d) volatile;
 
 public:
 	I2CMaster(I2C_MemMapPtr port, uint32_t instanceNumber);
 
 	~I2CMaster();
 
-	void serviceIRQ() {};
+	void serviceIRQ() volatile;
 
 	/** Read n registers. Blocking. Busy. */
 	bool readRegisters(uint8_t const& slaveAddress, uint8_t const& reg, uint8_t *buf, size_t nRegisters = 1) volatile;

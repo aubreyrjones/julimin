@@ -6,8 +6,46 @@
 #define JULIMIN_SYNC_H
 
 #include "chip.h"
+#include <atomic>
+#include <list>
 
 namespace nos {
+
+class Spinlock {
+protected:
+	std::atomic<bool> _lock {false};
+
+public:
+
+	void lock() {
+		bool result = false;
+		while (!_lock.compare_exchange_strong(result, true, std::memory_order_acquire, std::memory_order_relaxed)) {}
+	}
+
+	void unlock() {
+		_lock.store(false, std::memory_order_release);
+	}
+};
+
+class WaitPoint {
+protected:
+	std::atomic<bool> _lock {false};
+
+public:
+	void set() volatile {
+		_lock = false;
+	}
+
+	void wait() volatile {
+		bool result = true;
+		while (!_lock.compare_exchange_strong(result, false)) {}
+	}
+
+	void signal() volatile {
+		_lock.store(true);
+	}
+
+};
 
 class Semaphore {
 protected:
@@ -35,9 +73,7 @@ public:
 	void signal() volatile {
 		NOS_NOIRQ;
 
-		if (count < max) {
-			count++;
-		}
+		count++;
 	}
 };
 

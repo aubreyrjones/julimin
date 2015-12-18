@@ -64,7 +64,7 @@ SECTIONS
 	.text : {
 		. = ALIGN(4);
 		KEEP(*(_start))
-		*(.text .text.*)
+		*(.text .text*)
 	} > FLASH
 
 	.preinit_array : {

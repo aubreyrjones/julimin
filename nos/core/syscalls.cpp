@@ -9,11 +9,55 @@
 #include "syscalls.h"
 #include "chip.h"
 
+
+extern "C" {
+
 extern int errno;
 void* __dso_handle;
 
-extern "C" {
 void default_main_startup() { }
+
+
+void abort(void) {
+	_abort();
+}
+
+void _abort(void) {
+	_panic("ABORT");
+}
+
+void*_sbrk(ptrdiff_t increment) {
+	extern char _heapStart;
+	static char * _heapEnd = 0;
+
+	if (!_heapEnd) {
+		_heapEnd = &_heapStart;
+	}
+
+	char *prevHeapEnd = _heapEnd;
+
+	_heapEnd += increment;
+
+	return prevHeapEnd;
+}
+
+void _exit(int status) {
+	while (1) {};
+}
+
+pid_t _getpid(void) {
+	return 1;
+}
+
+pid_t _getppid(void) {
+	return 1;
+}
+
+int _kill(pid_t pid, int sig) {
+	errno = EINVAL;
+	return -1;
+}
+
 }
 
 void main_startup() __attribute__((weak, alias("default_main_startup")));
@@ -62,43 +106,3 @@ void _start()  {
 	_exit(main());
 }
 
-
-void abort(void) {
-	_abort();
-}
-
-void _abort(void) {
-	_panic("ABORT");
-}
-
-void*_sbrk(ptrdiff_t increment) {
-	extern char _heapStart;
-	static char * _heapEnd = 0;
-
-	if (!_heapEnd) {
-		_heapEnd = &_heapStart;
-	}
-
-	char *prevHeapEnd = _heapEnd;
-
-	_heapEnd += increment;
-
-	return prevHeapEnd;
-}
-
-void _exit(int status) {
-	while (1) {};
-}
-
-pid_t _getpid(void) {
-	return 1;
-}
-
-pid_t _getppid(void) {
-	return 1;
-}
-
-int _kill(pid_t pid, int sig) {
-	errno = EINVAL;
-	return -1;
-}
