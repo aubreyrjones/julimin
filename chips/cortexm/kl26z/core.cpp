@@ -29,9 +29,11 @@ __attribute__((used)) bool __atomic_compare_exchange_1(bool *ptr, bool *expected
 		*ptr = desired;
 		__asm__ volatile ("dsb");
 		__enable_irq();
+		return true;
 	}
 
-	return true;
+	__enable_irq();
+	return false;
 }
 
 }

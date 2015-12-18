@@ -32,7 +32,7 @@ protected:
 	std::atomic<bool> _lock {false};
 
 public:
-	void set() volatile {
+	void reset() volatile {
 		_lock = false;
 	}
 
