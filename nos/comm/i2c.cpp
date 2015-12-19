@@ -61,12 +61,23 @@ void I2CMaster::serviceIRQ() volatile {
 				errorCondition = true;
 			}
 		}
-		else {
-			bufferWord = i2cPort->D;
+		else { // rx mode
+
+			if (readCount) {
+				i2cPort->C1 |= I2C_C1_TXAK_MASK; // acknowledge the next byte
+				--readCount;
+			}
+
+			uint8_t readVal = i2cPort->D;
+			if (!rxBuffer.put(readVal)) {
+				errorCode = ErrorCode::OVERFLOW;
+				errorCondition = true;
+			}
 		}
 	}
 
 	if (s & I2C_S_ARBL_MASK) {
+		i2cPort->S |= I2C_S_ARBL_MASK;
 		errorCode = ErrorCode::ARBITRATION;
 		errorCondition = true;
 	}
@@ -80,22 +91,21 @@ void I2CMaster::serviceIRQ() volatile {
 /** Read n registers. Blocking. Busy. */
 bool I2CMaster::readRegisters(uint8_t const &slaveAddress, uint8_t const &reg, uint8_t *buf, size_t nRegisters) volatile {
 	if (!start()) panic("1");
-	if (!transmit(write_to(32))) panic("2");
+	if (!transmit(write_to(slaveAddress))) panic("2");
 	if (!transmit(0)) panic("3");
 	stop();
 
 	nos::spin(10000);
 
 	if (!start()) panic("4");
-	if (!transmit(read_from(32))) panic("5");
+	if (!transmit(read_from(slaveAddress))) panic("5");
 
-	if (!start_receive()) panic("6");
-	if (!receive(buf[0])) panic("7");
+	if (!receive(buf, nRegisters)) panic("7");
 	stop();
 
+	console.write("\n\r-->");
 	console.writeHex(buf[0]);
-	panic("yo");
-
+	console.write("<--\n\r");
 
 	return true;
 }
@@ -136,8 +146,26 @@ bool I2CMaster::transmit(uint8_t b) volatile {
 }
 
 
-bool I2CMaster::receive(uint8_t &d) volatile {
-	d = bufferWord;
+bool I2CMaster::receive(uint8_t * d, size_t nBytes) volatile {
+	if (!nBytes) return true;
+
+	i2cPort->C1 = RECV;
+	readCount += nBytes;
+
+	// dummy read to kick it off
+	uint8_t dummy = i2cPort->D;
+
+	// wait for the receive to finish
+	do {
+		if (!wait()) return false;
+
+		while (rxBuffer.get(*d)) {
+			++d;
+			--nBytes;
+			if (!nBytes) return true;
+		}
+
+	} while (true);
 
 	return true;
 }
@@ -147,10 +175,4 @@ bool I2CMaster::stop() volatile {
 	return true;
 }
 
-bool I2CMaster::start_receive() volatile {
-	i2cPort->C1 = RECV;
-	uint8_t d = i2cPort->D;
-
-	return wait();
-}
 }

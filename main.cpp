@@ -76,9 +76,9 @@ int main() {
 
 	osc1.setFrequency(fundamentalFrequency);
 
-	uint8_t i2cBuf[4];
-	i2c.readRegisters(32, 0x00, i2cBuf, 1);
-
+	uint8_t i2cBuf[4] = {0, 0, 0, 0};
+	i2c.readRegisters(32, 0x05, i2cBuf, 1);
+	//nos::console.writeHex(i2cBuf[0]);
 
 	nos::SystemTimer volatile timer(SAMPLE_RATE, tick);
 	for (;;) {

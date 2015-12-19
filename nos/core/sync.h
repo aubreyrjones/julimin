@@ -37,7 +37,7 @@ public:
 
 	void wait() volatile {
 		bool result = true;
-		while (!_lock.compare_exchange_strong(result, false)) {}
+		while (!_lock.compare_exchange_strong(result, false)) { result = true; }
 	}
 
 	void signal() volatile {
