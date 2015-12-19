@@ -23,7 +23,8 @@ void toggleStatusLEDState() {
 
 extern "C" {
 
-__attribute__((used)) bool __atomic_compare_exchange_1(bool *ptr, bool *expected, bool desired, bool weak, int success_memorder, int failure_memorder) {
+__attribute__((used))
+bool __atomic_compare_exchange_1(bool *ptr, bool *expected, bool desired, bool weak, int success_memorder, int failure_memorder) {
 	__disable_irq();
 	if (*ptr == *expected) {
 		*ptr = desired;
@@ -31,6 +32,8 @@ __attribute__((used)) bool __atomic_compare_exchange_1(bool *ptr, bool *expected
 		__enable_irq();
 		return true;
 	}
+
+	*expected = *ptr;
 
 	__enable_irq();
 	return false;

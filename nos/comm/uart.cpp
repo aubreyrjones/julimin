@@ -134,4 +134,10 @@ void Console::writeHex(uint8_t byte) volatile {
 	}
 }
 
+void Console::writeHex(uint32_t word) volatile {
+	writeHex((uint8_t) (0xff & (word >> 24)));
+	writeHex((uint8_t) (0xff & (word >> 16)));
+	writeHex((uint8_t) (0xff & (word >> 8)));
+	writeHex((uint8_t) (0xff & word));
+}
 }

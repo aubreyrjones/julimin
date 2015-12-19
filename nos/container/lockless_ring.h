@@ -77,7 +77,6 @@ namespace nos {
 			restart:
 			while (full()) { }
 
-
 			{
 				NOS_NOIRQ;
 				if (_full()) {

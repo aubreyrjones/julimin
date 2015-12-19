@@ -39,6 +39,8 @@ public:
 	void writeLine(char const* str) volatile;
 
 	void writeHex(uint8_t byte) volatile;
+
+	void writeHex(uint32_t word) volatile;
 };
 
 extern Console volatile console;

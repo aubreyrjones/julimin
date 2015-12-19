@@ -7,7 +7,6 @@
 
 #include "chip.h"
 #include <atomic>
-#include <list>
 
 namespace nos {
 
@@ -53,7 +52,7 @@ protected:
 	int volatile count;
 
 public:
-	Semaphore(int max = 1) : max(max), count(max) {}
+	Semaphore(int max = 1, int start = -1) : max(max), count((start < 0) ? max : start) {}
 
 	bool lock() volatile {
 		_top:

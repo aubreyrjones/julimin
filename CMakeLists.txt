@@ -24,7 +24,7 @@ set(NOS_SOURCE_FILES
         nos/core/syscalls.cpp
         nos/core/delay.cpp
         nos/time/SystemTimer.cpp
-        nos/analog/dac.h nos/comm/i2c.cpp nos/comm/i2c.h nos/comm/uart.cpp nos/comm/uart.h nos/core/sync.h)
+        nos/analog/dac.h nos/comm/i2c.cpp nos/comm/i2c.h nos/comm/uart.cpp nos/comm/uart.h nos/core/sync.h nos/comm/pin.cpp nos/comm/pin.h)
 
 include_directories(nos)
 
